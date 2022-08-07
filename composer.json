@@ -1,0 +1,12 @@
+{
+    "name": "dioh09/travel_archive",
+    "authors": [
+        {
+            "name": "dioh0922",
+            "email": "diohound@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.4"
+    }
+}
