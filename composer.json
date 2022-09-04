@@ -1,5 +1,10 @@
 {
     "name": "dioh09/travel_archive",
+		"autoload":{
+			"psr-4":{
+				"Src\\":"src/"
+			}
+		},
     "authors": [
         {
             "name": "dioh0922",
@@ -7,6 +12,7 @@
         }
     ],
     "require": {
-        "vlucas/phpdotenv": "^5.4"
+        "vlucas/phpdotenv": "^5.4",
+        "illuminate/events": "^7.30"
     }
 }
