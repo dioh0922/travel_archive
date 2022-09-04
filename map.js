@@ -1,9 +1,18 @@
+let load_img = {
+	type: "",
+	name: "",
+	bin: ""
+};
+const upload_form = `
+	<input type="file" name="img" onchange="loadImg(event)"/>
+	<input type="button" value="追加" onclick="saveImg()"/>
+`;
 
 let map;
 let arr = [];
 
-var MyLatLng = new google.maps.LatLng(35.6811673, 139.7670516);
-var Options = {
+let MyLatLng = new google.maps.LatLng(35.6811673, 139.7670516);
+let Options = {
 	zoom: 8, /* 地図の縮尺値 */
 	center: new google.maps.LatLng(35.681391, 139.766103), /* 地図の中心座標 */
 	mapTypeId: "roadmap" /* 地図の種類 */
@@ -11,7 +20,33 @@ var Options = {
 
 (window.onload = () => {
 	map = new google.maps.Map(document.getElementById('map'), Options);
+	initExistPin();
 });
+
+function loadImg(e){
+	let evt = e.target.files[0];
+	let reader = new FileReader();
+	reader.onload = () => {
+		let result = reader.result.split(",");
+		load_img.name = evt.name;
+		load_img.type = evt.type;
+		load_img.bin = result[1];
+	}
+	reader.readAsDataURL(evt);
+}
+
+function saveImg(){
+	console.log("test");
+	let post_data = new FormData();
+	post_data.append("type", load_img.type);
+	post_data.append("name", load_img.name);
+	post_data.append("bin", load_img.bin);
+	axios.post("./api/addImg.php", post_data).then(res => {
+		console.log("done");
+	}).catch(er => {
+		console.log(er);
+	});
+}
 
 function initExistPin(){
 	let marker = [];
@@ -59,9 +94,8 @@ function search(){
 				title: tmp.name
 	    });
 
-			let add_img_form = '<input type="file"/><input type="button" value="追加"/>';
 			let info_wnd = new google.maps.InfoWindow({
-				content: add_img_form,
+				content: upload_form,
 				maxWIdth: 200
 			});
 			google.maps.event.addListener(mark, "click", function(event){
