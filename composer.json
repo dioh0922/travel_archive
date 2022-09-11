@@ -13,6 +13,7 @@
     ],
     "require": {
         "vlucas/phpdotenv": "^5.4",
-        "illuminate/events": "^7.30"
+        "illuminate/events": "^7.30",
+        "j4mie/idiorm": "^1.5"
     }
 }
