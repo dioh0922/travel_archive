@@ -25,4 +25,8 @@ class Point{
 		$path->save();
 		return $path->id();
 	}
+	public function checkExist(string $st_name){
+		$exist = ORM::for_table("travel_point")->where("station_name", $st_name)->find_one();
+		return $exist;
+	}
 }

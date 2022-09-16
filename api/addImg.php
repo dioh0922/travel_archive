@@ -9,7 +9,12 @@ try{
 		$point = new Point;
 		$img_name = $_POST["point"]."_".$_POST["name"];
 		$photo->putFile($img_name, $_POST["bin"]);
-		$point_id = $point->savePoint($_POST["point"], (double)$_POST["lat"], (double)$_POST["lng"]);
+		$exist_pin = $point->checkExist($_POST["point"]);
+		if($exist_pin == false){
+			$point_id = $point->savePoint($_POST["point"], (double)$_POST["lat"], (double)$_POST["lng"]);
+		}else{
+			$point_id = $exist_pin->pin_id;
+		}
 		if($point_id > 0){
 			$point->saveImgPath($point_id, $img_name);
 		}
