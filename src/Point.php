@@ -29,4 +29,8 @@ class Point{
 		$exist = ORM::for_table("travel_point")->where("station_name", $st_name)->find_one();
 		return $exist;
 	}
+	public function getAllPin(){
+		$list = ORM::for_table("travel_point")->select("*")->where("is_deleted", 0)->find_array();
+		return $list;
+	}
 }

@@ -3,11 +3,20 @@ let load_img = {
 	name: "",
 	bin: ""
 };
+
+let open_pin = {
+	name: "",
+	x: 0,
+	y: 0
+};
+
 const upload_form = `
-	<input type="file" name="img" onchange="loadImg(event)"/>
+	<b>@st_name@</b><br>
+	<input type="file" name="img" onchange="loadImg(event)"/><br>
 	<input type="button" value="追加" onclick="saveImg()"/>
 `;
 
+let open_wnd = null;
 let map;
 let arr = [];
 
@@ -36,13 +45,19 @@ function loadImg(e){
 }
 
 function saveImg(){
-	console.log("test");
 	let post_data = new FormData();
 	post_data.append("type", load_img.type);
 	post_data.append("name", load_img.name);
 	post_data.append("bin", load_img.bin);
+	post_data.append("lat", open_pin.x);
+	post_data.append("lng", open_pin.y);
+	post_data.append("point", open_pin.name);
 	axios.post("./api/addImg.php", post_data).then(res => {
-		console.log("done");
+		if(res.data.result == 1){
+			open_wnd.close();
+		}else{
+			throw new Error(res.data.message);
+		}
 	}).catch(er => {
 		console.log(er);
 	});
@@ -50,20 +65,36 @@ function saveImg(){
 
 function initExistPin(){
 	let marker = [];
-	arr = [
-		{
-			lat: 35.681391,
-			lng: 139.766103,
-			html: "test"
+	axios.get("./api/getExistRecord.php").then(res => {
+		if(res.data.result == 1){
+			arr = res.data.list;
+			arr.forEach((item, i) => {
+				let tmp = new google.maps.Marker({
+					position: new google.maps.LatLng(item.lng, item.lat),
+					map: map
+				});
+				marker.push(tmp);
+				markerInfo(tmp, '<input type="button" value="一覧" onClick="openImgDialog(@id@)"/>'.replaceAll("@id@", item.pin_id));
+			});
+		}else{
+
 		}
-	];
-	arr.forEach((item, i) => {
-		let tmp = new google.maps.Marker({
-			position: new google.maps.LatLng(item.lat, item.lng),
-			map: map
-		});
-		marker.push(tmp);
-		markerInfo(tmp, item.html);
+	}).catch(er => {
+
+	});
+}
+
+function openImgDialog(id){
+	let post_data = new FormData();
+	post_data.append("pin_id", id);
+	axios.post("./api/getAllPinImg.php", post_data).then(res => {
+		if(res.data.result == 1){
+			
+		}else{
+
+		}
+	}).catch(er => {
+
 	});
 }
 
@@ -75,6 +106,7 @@ function markerInfo(marker, html){
 
 	google.maps.event.addListener(marker, "click", function(event){
 		info_wnd.open(map, marker);
+		open_wnd = info_wnd;
 	});
 
 }
@@ -94,14 +126,18 @@ function search(){
 				title: tmp.name
 	    });
 
+
 			let info_wnd = new google.maps.InfoWindow({
-				content: upload_form,
+				content: upload_form.replaceAll("@st_name@", tmp.name),
 				maxWIdth: 200
 			});
 			google.maps.event.addListener(mark, "click", function(event){
+				open_pin.name = tmp.name;
+				open_pin.y = tmp.y;
+				open_pin.x = tmp.x;
 				info_wnd.open(map, mark);
+				open_wnd = info_wnd;
 			});
-
 
 		}
 	}).catch(er => {
