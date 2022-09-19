@@ -19,15 +19,49 @@ $env->load();
 html { height: 100% }
 body { height: 100% }
 #map { height: 80%; width: 100%}
+.pin-photo{
+	width: 10%;
+	height: 20%;
+}
+#img-dialog{
+	z-index:999;
+	top:0;
+}
+
+dialog{
+	position: absolute;
+	padding:0;
+	border:0;
+	border-radius:0.6rem;
+	box-shadow: 0 0 1em black;
+}
+dialog::backdrop {
+  /* 背景を半透明のブラックにする */
+  background-color: rgba(0, 0, 0, 0.4);
+}
+dialog + .backdrop {
+	position:fixed;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+dialog[open] {
+  animation: slide-up 0.4s ease-out;
+}
 </style>
 </head>
 
 <body>
 	<input type="text" id="st-name" value=""/>
 	<input type="button" value="検索" onClick="search()"/>
-<div id="map"></div>
+	<div id="map"></div>
 
-<script src="./map.js"></script>
-HeartRails Express
+	<dialog class="dialog" id="img-dialog">
+		<div id="img-preview"></div>
+		<div>
+			<input type="button" value="閉じる" onClick="closeDialog()"/>
+		</div>
+	</dialog>
+
+	<script src="./map.js"></script>
+	HeartRails Express
 </body>
 </html>

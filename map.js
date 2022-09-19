@@ -13,7 +13,7 @@ let open_pin = {
 const upload_form = `
 	<b>@st_name@</b><br>
 	<input type="file" name="img" onchange="loadImg(event)"/><br>
-	<input type="button" value="追加" onclick="saveImg()"/>
+	<input type="button" value="追加" onclick="saveImg()"/><br>
 `;
 
 let open_wnd = null;
@@ -74,7 +74,9 @@ function initExistPin(){
 					map: map
 				});
 				marker.push(tmp);
-				markerInfo(tmp, '<input type="button" value="一覧" onClick="openImgDialog(@id@)"/>'.replaceAll("@id@", item.pin_id));
+				let exist_form = upload_form.replaceAll("@st_name@", item.station_name);
+				exist_form += '<input type="button" value="一覧" onClick="openImgDialog(@id@)"/>'.replaceAll("@id@", item.pin_id)
+				markerInfo(tmp, exist_form);
 			});
 		}else{
 
@@ -89,13 +91,18 @@ function openImgDialog(id){
 	post_data.append("pin_id", id);
 	axios.post("./api/getAllPinImg.php", post_data).then(res => {
 		if(res.data.result == 1){
-			
+			document.getElementById("img-preview").innerHTML = res.data.html;
+			document.getElementById("img-dialog").show();
 		}else{
 
 		}
 	}).catch(er => {
 
 	});
+}
+
+function closeDialog(){
+	document.getElementById("img-dialog").close();
 }
 
 function markerInfo(marker, html){
