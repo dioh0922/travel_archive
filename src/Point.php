@@ -20,7 +20,7 @@ class Point{
 	}
 	public function saveImgPath(int $id, string $img_path){
 		$path = ORM::for_table("travel_img")->create();
-		$path->ping_id = $id;
+		$path->pin_id = $id;
 		$path->file_name = $img_path;
 		$path->save();
 		return $path->id();

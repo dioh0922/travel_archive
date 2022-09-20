@@ -76,7 +76,7 @@ function initExistPin(){
 				marker.push(tmp);
 				let exist_form = upload_form.replaceAll("@st_name@", item.station_name);
 				exist_form += '<input type="button" value="一覧" onClick="openImgDialog(@id@)"/>'.replaceAll("@id@", item.pin_id)
-				markerInfo(tmp, exist_form);
+				markerInfo(tmp, exist_form, item.station_name);
 			});
 		}else{
 
@@ -93,6 +93,7 @@ function openImgDialog(id){
 		if(res.data.result == 1){
 			document.getElementById("img-preview").innerHTML = res.data.html;
 			document.getElementById("img-dialog").show();
+			document.getElementById("dialog-background").style.display = "block";
 		}else{
 
 		}
@@ -103,9 +104,10 @@ function openImgDialog(id){
 
 function closeDialog(){
 	document.getElementById("img-dialog").close();
+	document.getElementById("dialog-background").style.display = "none";
 }
 
-function markerInfo(marker, html){
+function markerInfo(marker, html, name){
 	let info_wnd = new google.maps.InfoWindow({
 		content: html,
 		maxWIdth: 200
@@ -114,6 +116,7 @@ function markerInfo(marker, html){
 	google.maps.event.addListener(marker, "click", function(event){
 		info_wnd.open(map, marker);
 		open_wnd = info_wnd;
+		open_pin.name = name;
 	});
 
 }
