@@ -1,9 +1,15 @@
 <?php
 require(dirname(__FILE__)."/../vendor/autoload.php");
+session_start();
 use Src\Photo;
 use Src\Point;
 $result = ["result" => 0];
+
 try{
+	if(session_status() != PHP_SESSION_ACTIVE || !array_key_exists("login", $_SESSION)){
+		throw new Exception("session expire");
+	}
+
 	if(array_key_exists("bin", $_POST)){
 		$photo = new Photo;
 		$point = new Point;
