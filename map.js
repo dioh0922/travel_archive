@@ -32,6 +32,17 @@ let Options = {
 	initExistPin();
 });
 
+function openDialog(str){
+	document.getElementById("img-preview").innerHTML = str;
+	document.getElementById("img-dialog").show();
+	document.getElementById("dialog-background").style.display = "block";
+}
+function closeDialog(){
+	document.getElementById("img-dialog").close();
+	document.getElementById("dialog-background").style.display = "none";
+}
+
+
 function loadImg(e){
 	let evt = e.target.files[0];
 	let reader = new FileReader();
@@ -59,7 +70,7 @@ function saveImg(){
 			throw new Error(res.data.message);
 		}
 	}).catch(er => {
-		console.log(er);
+		openDialog(er.message);
 	});
 }
 
@@ -100,11 +111,6 @@ function openImgDialog(id){
 	}).catch(er => {
 
 	});
-}
-
-function closeDialog(){
-	document.getElementById("img-dialog").close();
-	document.getElementById("dialog-background").style.display = "none";
 }
 
 function markerInfo(marker, html, name){
