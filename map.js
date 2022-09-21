@@ -161,3 +161,19 @@ function search(){
 	});
 }
 window.search = search;
+
+
+
+function login(){
+	let post_data = new FormData();
+	post_data.append("pass", document.getElementById("pass").value);
+	axios.post("../util_api/login.php", post_data).then(res => {
+		if(res.data.result == 1){
+			location.reload();
+		}else{
+			throw new Error("ログインに失敗しました");
+		}
+	}).catch(er => {
+		openDialog(er.message);
+	});
+}

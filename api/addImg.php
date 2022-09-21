@@ -6,7 +6,7 @@ use Src\Point;
 $result = ["result" => 0];
 
 try{
-	if(session_status() != PHP_SESSION_ACTIVE || !array_key_exists("login", $_SESSION)){
+	if(!array_key_exists("login", $_SESSION) || $_SESSION["login"] == null){
 		throw new Exception("session expire");
 	}
 
