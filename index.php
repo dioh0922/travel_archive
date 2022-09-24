@@ -6,6 +6,9 @@ if($_SESSION["login"] == "on"){
 	$login = true;
 }
 
+$category = new Src\Category();
+$category_list = $category->getCategory();
+
 $env = Dotenv\Dotenv::createImmutable(dirname(__FILE__)."/../env");
 $env->load();
 ?>
@@ -36,6 +39,11 @@ $env->load();
 
 	<input type="text" id="st-name" value=""/>
 	<input type="button" value="検索" placeholder="駅名を入力" onClick="search()"/>
+	<select onChange="categorySelect(event)">
+		<?php foreach ($category_list as $key => $category_obj) { ?>
+			<option value="<?php echo $category_obj["category_id"] ?>"/><?php echo $category_obj["category_title"]; ?></>
+		<?php } ?>
+	</select>
 	<div id="map"></div>
 
 	<dialog class="dialog" id="img-dialog">
