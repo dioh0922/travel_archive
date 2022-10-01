@@ -1,3 +1,7 @@
+const { VueLoaderPlugin } = require("vue-loader");
+const webpack = require("webpack");
+const path = require("path");
+
 module.exports = {
 	entry:{
 		"map": "./js/map.js",
@@ -11,11 +15,18 @@ module.exports = {
 		extensions: ["", ".js"]
 	},
 	devtool: "inline-source-map",
+	plugins:[
+		new VueLoaderPlugin()
+	],
 	module:{
 		rules:[
 			{
-				test:/\.js$/,
+				test: /\.js$/,
 				loader: "babel-loader"
+			},
+			{
+				test: /\.vue$/,
+				loader: "vue-loader"
 			}
 		]
 	}
