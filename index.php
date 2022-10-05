@@ -17,7 +17,7 @@ $env->load();
 <html lang="ja">
 
 <head>
-<meta name=”viewport” content=”width=device-width,initial-scale=1″>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta charset="UTF-8">
 <title>Sample_GoogleMap</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -37,25 +37,35 @@ $env->load();
 		</div>
 	<?php } ?>
 
-	<input type="text" id="st-name" value=""/>
-	<input type="button" value="検索" placeholder="駅名を入力" onClick="search()"/>
-	<select onChange="categorySelect(event)">
-		<?php foreach ($category_list as $key => $category_obj) { ?>
-			<option value="<?php echo $category_obj["category_id"] ?>"/><?php echo $category_obj["category_title"]; ?></>
-		<?php } ?>
-	</select>
-	<div id="map"></div>
+	<div id="app-container">
+		HeartRails Express
 
-	<dialog class="dialog" id="img-dialog">
-		<div id="img-preview"></div>
-		<div>
-			<input type="button" value="閉じる" onClick="closeDialog()" data-backdrop="true"/>
-		</div>
-	</dialog>
-	<div id="dialog-background"></div>
+		<container @init="initExistPin"></container>
+<!---
+		<input type="text" id="st-name" value=""/>
+		<input type="button" value="検索" placeholder="駅名を入力" onClick="search()"/>
+		<select onChange="categorySelect(event)">
+			<?php foreach ($category_list as $key => $category_obj) { ?>
+				<option value="<?php echo $category_obj["category_id"] ?>"/><?php echo $category_obj["category_title"]; ?></>
+			<?php } ?>
+		</select>
+		<div id="map"></div>
+--->
+	</div>
 
-	<script src="./map.js"></script>
 
-	HeartRails Express
+
+	<div>
+		<dialog class="dialog" id="img-dialog">
+			<div id="img-preview"></div>
+			<div>
+				<input type="button" value="閉じる" onClick="closeDialog()" data-backdrop="true"/>
+			</div>
+		</dialog>
+		<div id="dialog-background"></div>
+	</div>
+	<script src="./dist/map.js"></script>
+
+
 </body>
 </html>
