@@ -29,7 +29,21 @@ let open_pin = {
 	window.map = map;
 
 	const form = createApp({
+		data(){
+			return{
+				category:[]
+			};
+		},
 		methods:{
+			initAllCategory(){
+				axios.get("./api/getAllCategory.php").then(res => {
+					if(res.data.result == 1){
+						this.category = res.data.list;
+					}
+				}).catch(er => {
+
+				});
+			},
 			initExistPin(){
 				let marker = [];
 				axios.get("./api/getExistRecord.php").then(res => {
@@ -46,17 +60,13 @@ let open_pin = {
 							markerInfo(tmp, exist_form, item.station_name);
 						});
 					}else{
-
 					}
 				}).catch(er => {
-
 				});
 			}
 		},
 		mounted(){
-			//map要素が見つからない
-			//map = new window.google.maps.Map(document.getElementById('map'), Options);
-			//initExistPin();
+			this.initAllCategory();
 		}
 	});
 
@@ -70,6 +80,7 @@ const upload_form = `
 	<b>@st_name@</b><br>
 	<input type="file" name="img" onchange="loadImg(event)"/><br>
 	<input type="button" value="追加" onclick="saveImg()"/><br>
+	<exist-info></exist-info>
 `;
 
 let open_wnd = null;
@@ -142,11 +153,10 @@ function markerInfo(marker, html, name){
 	});
 
 	google.maps.event.addListener(marker, "click", function(event){
-		info_wnd.open(map, marker);
+		info_wnd.open(window.map, marker);
 		open_wnd = info_wnd;
 		open_pin.name = name;
 	});
-
 }
 
 function search(){

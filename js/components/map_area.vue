@@ -4,6 +4,7 @@
 			<input type="text" id="st-name" value=""/>
 			<input type="button" value="検索" placeholder="駅名を入力" onClick="search()"/>
 			<select onChange="categorySelect(event)">
+				<option v-for="item in category" v-bind:value="item.category_id">{{item.category_title}}</option>
 				<!--
 				<?php foreach ($category_list as $key => $category_obj) { ?>
 					<option value="<?php echo $category_obj["category_id"] ?>"/><?php echo $category_obj["category_title"]; ?></>
@@ -17,7 +18,7 @@
 
 <script>
 	export default {
-		props:[""],
+		props:["category"],
 		mounted(){
 			let Options = {
 				zoom: 8, /* 地図の縮尺値 */
