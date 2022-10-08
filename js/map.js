@@ -2,6 +2,8 @@ import {createApp} from "vue/dist/vue.esm-bundler";
 import Container from "./components/map_area.vue";
 import axios from "axios";
 
+import {PinForm} from "./components/form_module.js";
+
 let app = null;
 let map = null;
 
@@ -18,7 +20,6 @@ let open_pin = {
 };
 
 (window.onload = () => {
-	console.log(window.google);
 
 	let Options = {
 		zoom: 8, /* 地図の縮尺値 */
@@ -55,8 +56,7 @@ let open_pin = {
 								map: window.map
 							});
 							marker.push(tmp);
-							let exist_form = upload_form.replaceAll("@st_name@", item.station_name);
-							exist_form += '<input type="button" value="一覧" onClick="openImgDialog(@id@)"/>'.replaceAll("@id@", item.pin_id)
+							let exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
 							markerInfo(tmp, exist_form, item.station_name);
 						});
 					}else{
@@ -75,14 +75,6 @@ let open_pin = {
 
 });
 
-
-const upload_form = `
-	<b>@st_name@</b><br>
-	<input type="file" name="img" onchange="loadImg(event)"/><br>
-	<input type="button" value="追加" onclick="saveImg()"/><br>
-	<exist-info></exist-info>
-`;
-
 let open_wnd = null;
 let arr = [];
 let select_category = 1;
@@ -93,10 +85,12 @@ function openDialog(str){
 	document.getElementById("img-dialog").show();
 	document.getElementById("dialog-background").style.display = "block";
 }
+window.openDIalog = openDialog;
 function closeDialog(){
 	document.getElementById("img-dialog").close();
 	document.getElementById("dialog-background").style.display = "none";
 }
+window.closeDialog = closeDialog;
 
 
 function loadImg(e){
@@ -145,6 +139,7 @@ function openImgDialog(id){
 
 	});
 }
+window.openImgDialog = openImgDialog;
 
 function markerInfo(marker, html, name){
 	let info_wnd = new google.maps.InfoWindow({
