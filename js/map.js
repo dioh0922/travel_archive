@@ -63,6 +63,38 @@ let open_pin = {
 					}
 				}).catch(er => {
 				});
+			},
+			searchStation(e){
+				let post_data = new FormData();
+				post_data.append("method", "getStations");
+				post_data.append("name", document.getElementById("st-name").value);
+				axios.post("http://express.heartrails.com/api/json/", post_data).then(res => {
+					if(res.data.response.station != void 0){
+						let tmp = res.data.response.station[0];
+
+						const latlng = new google.maps.LatLng(tmp.y, tmp.x);
+						let mark = new google.maps.Marker({
+							position: latlng,
+							map: window.map,
+							title: tmp.name
+						});
+
+						let info_wnd = new google.maps.InfoWindow({
+							content: upload_form.replaceAll("@st_name@", tmp.name),
+							maxWIdth: 200
+						});
+						google.maps.event.addListener(mark, "click", function(event){
+							open_pin.name = tmp.name;
+							open_pin.y = tmp.y;
+							open_pin.x = tmp.x;
+							info_wnd.open(window.map, mark);
+							open_wnd = info_wnd;
+						});
+
+					}
+				}).catch(er => {
+					console.log(er);
+				});
 			}
 		},
 		mounted(){
@@ -85,7 +117,7 @@ function openDialog(str){
 	document.getElementById("img-dialog").show();
 	document.getElementById("dialog-background").style.display = "block";
 }
-window.openDIalog = openDialog;
+window.openDialog = openDialog;
 function closeDialog(){
 	document.getElementById("img-dialog").close();
 	document.getElementById("dialog-background").style.display = "none";
@@ -153,41 +185,6 @@ function markerInfo(marker, html, name){
 		open_pin.name = name;
 	});
 }
-
-function search(){
-	let post_data = new FormData();
-	post_data.append("method", "getStations");
-	post_data.append("name", document.getElementById("st-name").value);
-	axios.post("http://express.heartrails.com/api/json/", post_data).then(res => {
-		if(res.data.response.station != void 0){
-			let tmp = res.data.response.station[0];
-
-			const latlng = new google.maps.LatLng(tmp.y, tmp.x);
-	    let mark = new google.maps.Marker({
-	      position: latlng,
-	      map: map,
-				title: tmp.name
-	    });
-
-
-			let info_wnd = new google.maps.InfoWindow({
-				content: upload_form.replaceAll("@st_name@", tmp.name),
-				maxWIdth: 200
-			});
-			google.maps.event.addListener(mark, "click", function(event){
-				open_pin.name = tmp.name;
-				open_pin.y = tmp.y;
-				open_pin.x = tmp.x;
-				info_wnd.open(map, mark);
-				open_wnd = info_wnd;
-			});
-
-		}
-	}).catch(er => {
-		console.log(er);
-	});
-}
-window.search = search;
 
 function login(){
 	let post_data = new FormData();
