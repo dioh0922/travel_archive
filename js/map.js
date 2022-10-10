@@ -80,7 +80,7 @@ let open_pin = {
 						});
 
 						let info_wnd = new google.maps.InfoWindow({
-							content: upload_form.replaceAll("@st_name@", tmp.name),
+							content: PinForm.loadNewPinForm(tmp.name),
 							maxWIdth: 200
 						});
 						google.maps.event.addListener(mark, "click", function(event){
@@ -104,7 +104,6 @@ let open_pin = {
 
 	form.component("container", Container);
 	form.mount("#app-container");
-
 });
 
 let open_wnd = null;
@@ -136,6 +135,7 @@ function loadImg(e){
 	}
 	reader.readAsDataURL(evt);
 }
+window.loadImg = loadImg;
 
 function saveImg(){
 	let post_data = new FormData();
@@ -155,6 +155,7 @@ function saveImg(){
 		openDialog(er.message);
 	});
 }
+window.saveImg = saveImg;
 
 function openImgDialog(id){
 	let post_data = new FormData();

@@ -15,4 +15,7 @@ export class PinForm{
 		exist_form += '<input type="button" value="一覧" onClick="openImgDialog(@id@)"/>'.replaceAll("@id@", id);
 		return exist_form;
 	}
+	static loadNewPinForm(name){
+		return upload_form.replaceAll("@st_name@", name);
+	}
 }
