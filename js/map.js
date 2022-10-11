@@ -6,6 +6,7 @@ import {PinForm} from "./components/form_module.js";
 
 let app = null;
 let map = null;
+let marker = [];
 
 let load_img = {
 	type: "",
@@ -45,10 +46,17 @@ let open_pin = {
 
 				});
 			},
-			initExistPin(){
-				let marker = [];
-				axios.get("./api/getExistRecord.php").then(res => {
+			initExistPin(e){
+				let post_data = new FormData();
+				post_data.append("category", e.category);
+				axios.post("./api/getExistRecord.php", post_data).then(res => {
 					if(res.data.result == 1){
+						if(marker.length > 0){
+							marker.forEach((mark, i) => {
+								mark.setMap(null);
+							});
+							marker.length = 0;
+						}
 						arr = res.data.list;
 						arr.forEach((item, i) => {
 							let tmp = new google.maps.Marker({
