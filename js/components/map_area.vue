@@ -7,7 +7,6 @@
 			</div>
 			<div>
 				<select v-bind:value="select" v-on:change="categorySelect">
-					<option value="0">系統を選択</option>
 					<option v-for="item in category" v-bind:value="item.category_id">{{item.category_title}}</option>
 				</select>
 			</div>
@@ -21,7 +20,7 @@
 		props:["category"],
 		data(){
 			return {
-				select: 0,
+				select: 1,
 				search: ""
 			};
 		},
@@ -31,6 +30,7 @@
 			},
 			categorySelect(e){
 				this.select = e.target.value;
+				this.initPin();
 			},
 			searchStation(){
 				if(this.search != ""){
@@ -38,6 +38,9 @@
 				}else{
 					openDialog("駅名を選択する");
 				}
+			},
+			initPin(){
+				this.$emit("init", {category: this.select});
 			}
 		},
 		mounted(){
@@ -48,7 +51,7 @@
 			};
 			const map = new window.google.maps.Map(document.getElementById('map'), Options);
 			window.map = map;
-			this.$emit("init");
+			this.initPin();
 		}
 	}
 </script>

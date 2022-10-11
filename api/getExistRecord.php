@@ -5,7 +5,7 @@ $result = ["result" => 0, "list" => []];
 try{
 	$point = new Point;
 	$result["result"] = 1;
-	$result["list"] = $point->getAllPin();
+	$result["list"] = $point->getAllPin($_POST["category"]);
 }catch(Exception $e){
 	$result["result"] = -1;
 	$result["message"] = $e->getMessage();
