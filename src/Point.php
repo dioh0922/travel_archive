@@ -18,10 +18,11 @@ class Point{
 		$point->save();
 		return $point->id();
 	}
-	public function saveImgPath(int $id, string $img_path){
+	public function saveImgPath(int $id, string $img_path, int $category){
 		$path = ORM::for_table("travel_img")->create();
 		$path->pin_id = $id;
 		$path->file_name = $img_path;
+		$path->img_category = $category;
 		$path->save();
 		return $path->id();
 	}

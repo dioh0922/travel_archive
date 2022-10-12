@@ -11,7 +11,8 @@ let marker = [];
 let load_img = {
 	type: "",
 	name: "",
-	bin: ""
+	bin: "",
+	category: 0
 };
 
 let open_pin = {
@@ -47,6 +48,7 @@ let open_pin = {
 				});
 			},
 			initExistPin(e){
+				load_img.category = e.category;
 				let post_data = new FormData();
 				post_data.append("category", e.category);
 				axios.post("./api/getExistRecord.php", post_data).then(res => {
@@ -116,8 +118,6 @@ let open_pin = {
 
 let open_wnd = null;
 let arr = [];
-let select_category = 1;
-
 
 function openDialog(str){
 	document.getElementById("img-preview").innerHTML = str;
@@ -130,7 +130,6 @@ function closeDialog(){
 	document.getElementById("dialog-background").style.display = "none";
 }
 window.closeDialog = closeDialog;
-
 
 function loadImg(e){
 	let evt = e.target.files[0];
@@ -150,6 +149,7 @@ function saveImg(){
 	post_data.append("type", load_img.type);
 	post_data.append("name", load_img.name);
 	post_data.append("bin", load_img.bin);
+	post_data.append("category", load_img.category);
 	post_data.append("lat", open_pin.x);
 	post_data.append("lng", open_pin.y);
 	post_data.append("point", open_pin.name);
@@ -168,6 +168,7 @@ window.saveImg = saveImg;
 function openImgDialog(id){
 	let post_data = new FormData();
 	post_data.append("pin_id", id);
+	post_data.append("category", load_img.category);
 	axios.post("./api/getAllPinImg.php", post_data).then(res => {
 		if(res.data.result == 1){
 			document.getElementById("img-preview").innerHTML = res.data.html;
@@ -207,8 +208,4 @@ function login(){
 	}).catch(er => {
 		openDialog(er.message);
 	});
-}
-
-function categorySelect(e){
-	select_category = e.target.value;
 }

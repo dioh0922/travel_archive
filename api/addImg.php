@@ -22,7 +22,7 @@ try{
 			$point_id = $exist_pin->pin_id;
 		}
 		if($point_id > 0){
-			$point->saveImgPath($point_id, $img_name);
+			$point->saveImgPath($point_id, $img_name, $_POST["category"]);
 		}
 	}
 	$result["result"] = 1;

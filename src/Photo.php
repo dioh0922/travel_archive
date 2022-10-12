@@ -16,10 +16,10 @@ class Photo{
 		$data = base64_decode($bin);
 		file_put_contents(dirname(__FILE__).self::IMG_DIR.$name, $data);
 	}
-	public function getAllPhoto(int $id){
+	public function getAllPhoto(int $id, int $category){
 		$path = ORM::for_table("travel_img")
 		->select("file_name")
-		->where(["pin_id" => $id, "file_delete" => 0])->find_array();
+		->where(["pin_id" => $id, "file_delete" => 0, "img_category" => $category])->find_array();
 		return $path;
 	}
 }
