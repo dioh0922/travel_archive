@@ -1,8 +1,5 @@
-import {createApp} from "vue/dist/vue.esm-bundler";
-import Container from "./components/map_area.vue";
 import axios from "axios";
-
-import {PinForm} from "./components/form_module.js";
+import {PinForm} from "./form_module.js";
 
 let app = null;
 let map = null;
@@ -28,9 +25,10 @@ let open_pin = {
 		center: new google.maps.LatLng(35.681391, 139.766103), /* 地図の中心座標 */
 		mapTypeId: "roadmap" /* 地図の種類 */
 	};
+	map = new window.google.maps.Map(document.getElementById('map'), Options);
+	initExistPin(1);
 
-	window.map = map;
-
+	/*
 	const form = createApp({
 		data(){
 			return{
@@ -47,66 +45,6 @@ let open_pin = {
 
 				});
 			},
-			initExistPin(e){
-				load_img.category = e.category;
-				let post_data = new FormData();
-				post_data.append("category", e.category);
-				axios.post("./api/getExistRecord.php", post_data).then(res => {
-					if(res.data.result == 1){
-						if(marker.length > 0){
-							marker.forEach((mark, i) => {
-								mark.setMap(null);
-							});
-							marker.length = 0;
-						}
-						arr = res.data.list;
-						arr.forEach((item, i) => {
-							let tmp = new google.maps.Marker({
-								position: new google.maps.LatLng(item.lng, item.lat),
-								map: window.map
-							});
-							marker.push(tmp);
-							let exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
-							markerInfo(tmp, exist_form, item.station_name);
-						});
-					}else{
-					}
-				}).catch(er => {
-				});
-			},
-			searchStation(e){
-				let post_data = new FormData();
-				post_data.append("method", "getStations");
-				post_data.append("name", document.getElementById("st-name").value);
-				axios.post("http://express.heartrails.com/api/json/", post_data).then(res => {
-					if(res.data.response.station != void 0){
-						let tmp = res.data.response.station[0];
-
-						const latlng = new google.maps.LatLng(tmp.y, tmp.x);
-						let mark = new google.maps.Marker({
-							position: latlng,
-							map: window.map,
-							title: tmp.name
-						});
-
-						let info_wnd = new google.maps.InfoWindow({
-							content: PinForm.loadNewPinForm(tmp.name),
-							maxWIdth: 200
-						});
-						google.maps.event.addListener(mark, "click", function(event){
-							open_pin.name = tmp.name;
-							open_pin.y = tmp.y;
-							open_pin.x = tmp.x;
-							info_wnd.open(window.map, mark);
-							open_wnd = info_wnd;
-						});
-
-					}
-				}).catch(er => {
-					console.log(er);
-				});
-			}
-		},
 		mounted(){
 			this.initAllCategory();
 		}
@@ -114,6 +52,7 @@ let open_pin = {
 
 	form.component("container", Container);
 	form.mount("#app-container");
+	*/
 });
 
 let open_wnd = null;
@@ -130,6 +69,73 @@ function closeDialog(){
 	document.getElementById("dialog-background").style.display = "none";
 }
 window.closeDialog = closeDialog;
+
+function categorySelect(e){
+	initExistPin(e.target.value);
+}
+window.categorySelect = categorySelect;
+
+function 	initExistPin(category){
+	load_img.category = category;
+	let post_data = new FormData();
+	post_data.append("category", category);
+	axios.post("./api/getExistRecord.php", post_data).then(res => {
+		if(res.data.result == 1){
+			if(marker.length > 0){
+				marker.forEach((mark, i) => {
+					mark.setMap(null);
+				});
+				marker.length = 0;
+			}
+			arr = res.data.list;
+			arr.forEach((item, i) => {
+				let tmp = new google.maps.Marker({
+					position: new google.maps.LatLng(item.lng, item.lat),
+					map: map
+				});
+				marker.push(tmp);
+				let exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
+				markerInfo(tmp, exist_form, item.station_name);
+			});
+		}else{
+		}
+	}).catch(er => {
+	});
+}
+
+function 	search(e){
+	let post_data = new FormData();
+	post_data.append("method", "getStations");
+	post_data.append("name", document.getElementById("st-name").value);
+	axios.post("http://express.heartrails.com/api/json/", post_data).then(res => {
+		if(res.data.response.station != void 0){
+			let tmp = res.data.response.station[0];
+
+			const latlng = new google.maps.LatLng(tmp.y, tmp.x);
+			let mark = new google.maps.Marker({
+				position: latlng,
+				map: map,
+				title: tmp.name
+			});
+
+			let info_wnd = new google.maps.InfoWindow({
+				content: PinForm.loadNewPinForm(tmp.name),
+				maxWIdth: 200
+			});
+			google.maps.event.addListener(mark, "click", function(event){
+				open_pin.name = tmp.name;
+				open_pin.y = tmp.y;
+				open_pin.x = tmp.x;
+				info_wnd.open(window.map, mark);
+				open_wnd = info_wnd;
+			});
+		}
+	}).catch(er => {
+		console.log(er);
+	});
+}
+window.search = search;
+
 
 function loadImg(e){
 	let evt = e.target.files[0];
@@ -156,6 +162,7 @@ function saveImg(){
 	axios.post("./api/addImg.php", post_data).then(res => {
 		if(res.data.result == 1){
 			open_wnd.close();
+			initExistPin(load_img.caetgory);
 		}else{
 			throw new Error(res.data.message);
 		}
@@ -190,7 +197,7 @@ function markerInfo(marker, html, name){
 	});
 
 	google.maps.event.addListener(marker, "click", function(event){
-		info_wnd.open(window.map, marker);
+		info_wnd.open(map, marker);
 		open_wnd = info_wnd;
 		open_pin.name = name;
 	});

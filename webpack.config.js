@@ -1,4 +1,4 @@
-const { VueLoaderPlugin } = require("vue-loader");
+//const { VueLoaderPlugin } = require("vue-loader");
 const webpack = require("webpack");
 const path = require("path");
 
@@ -15,19 +15,23 @@ module.exports = {
 		extensions: ["", ".js"]
 	},
 	devtool: "inline-source-map",
+/*
 	plugins:[
 		new VueLoaderPlugin()
 	],
+*/
 	module:{
 		rules:[
 			{
 				test: /\.js$/,
 				loader: "babel-loader"
 			},
+			/*
 			{
 				test: /\.vue$/,
 				loader: "vue-loader"
 			},
+			*/
 			{
 				test: /\.css$/,
 				use:[

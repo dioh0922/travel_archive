@@ -1,5 +1,9 @@
 html { height: 100% }
 body { height: 100% }
+#map{
+	height: 80%;
+	width: 100%;
+}
 .pin-photo{
 	width: 10%;
 	height: 20%;
