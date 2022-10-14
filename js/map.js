@@ -83,7 +83,7 @@ function 	initExistPin(category){
 		if(res.data.result == 1){
 			if(marker.length > 0){
 				marker.forEach((mark, i) => {
-					mark.setMap(null);
+					mark.pin.setMap(null);
 				});
 				marker.length = 0;
 			}
@@ -93,7 +93,7 @@ function 	initExistPin(category){
 					position: new google.maps.LatLng(item.lng, item.lat),
 					map: map
 				});
-				marker.push(tmp);
+				marker.push({pin: tmp, name: item.station_name});
 				let exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
 				markerInfo(tmp, exist_form, item.station_name);
 			});
@@ -111,24 +111,26 @@ function 	search(e){
 		if(res.data.response.station != void 0){
 			let tmp = res.data.response.station[0];
 
-			const latlng = new google.maps.LatLng(tmp.y, tmp.x);
-			let mark = new google.maps.Marker({
-				position: latlng,
-				map: map,
-				title: tmp.name
-			});
+			if(marker.find(item => item.name == tmp.name) == void 0){
+				const latlng = new google.maps.LatLng(tmp.y, tmp.x);
+				let mark = new google.maps.Marker({
+					position: latlng,
+					map: map,
+					title: tmp.name
+				});
 
-			let info_wnd = new google.maps.InfoWindow({
-				content: PinForm.loadNewPinForm(tmp.name),
-				maxWIdth: 200
-			});
-			google.maps.event.addListener(mark, "click", function(event){
-				open_pin.name = tmp.name;
-				open_pin.y = tmp.y;
-				open_pin.x = tmp.x;
-				info_wnd.open(window.map, mark);
-				open_wnd = info_wnd;
-			});
+				let info_wnd = new google.maps.InfoWindow({
+					content: PinForm.loadNewPinForm(tmp.name),
+					maxWIdth: 200
+				});
+				google.maps.event.addListener(mark, "click", function(event){
+					open_pin.name = tmp.name;
+					open_pin.y = tmp.y;
+					open_pin.x = tmp.x;
+					info_wnd.open(window.map, mark);
+					open_wnd = info_wnd;
+				});
+			}
 		}
 	}).catch(er => {
 		console.log(er);
