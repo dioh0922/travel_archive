@@ -71,6 +71,7 @@ function closeDialog(){
 window.closeDialog = closeDialog;
 
 function categorySelect(e){
+	document.getElementById("st-name").value = "";
 	initExistPin(e.target.value);
 }
 window.categorySelect = categorySelect;
@@ -106,7 +107,7 @@ function 	initExistPin(category){
 function 	search(e){
 	let post_data = new FormData();
 	post_data.append("method", "getStations");
-	post_data.append("name", document.getElementById("st-name").value);
+	post_data.append("name", e.target.value);
 	axios.post("http://express.heartrails.com/api/json/", post_data).then(res => {
 		if(res.data.response.station != void 0){
 			let tmp = res.data.response.station[0];
@@ -130,6 +131,7 @@ function 	search(e){
 					info_wnd.open(window.map, mark);
 					open_wnd = info_wnd;
 				});
+				marker.push({pin: mark, name: tmp.name});
 			}
 		}
 	}).catch(er => {
