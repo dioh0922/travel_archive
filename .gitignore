@@ -1,2 +1,4 @@
 /vendor/
 /img/
+/node_modules/
+/dist/
