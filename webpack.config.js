@@ -4,8 +4,8 @@ const path = require("path");
 
 module.exports = {
 	entry:{
-		"map": "./js/map.js",
-		"main": "./js/main.js"
+//		"main": "./js/main.js",
+		"map": "./js/map.js"
 	},
 	output:{
 		path: __dirname + "/dist",
