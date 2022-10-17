@@ -22,7 +22,7 @@ $env->load();
 <title>旅行記録</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<script src="http://maps.google.com/maps/api/js?key=<?=$_ENV["G_MAP_API"] ?>&language=ja"></script>
+<script src="https://maps.google.com/maps/api/js?key=<?=$_ENV["G_MAP_API"] ?>&language=ja"></script>
 <link rel="stylesheet" href="./travel_archive.css">
 </head>
 
