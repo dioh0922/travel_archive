@@ -220,3 +220,4 @@ function login(){
 		openDialog(er.message);
 	});
 }
+window.login = login;
