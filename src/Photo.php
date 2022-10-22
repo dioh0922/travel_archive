@@ -84,6 +84,11 @@ class Photo{
 				if(!imagepng($canvas, dirname(__FILE__).self::IMG_DIR.$name)){
 					throw new Exception("err save png");
 				}
+				break;
+			case IMAGETYPE_BMP:
+				if(!imagebmp($canvas, dirname(__FILE__).self::IMG_DIR.$name)){
+					throw new Exception("err save bmp");
+				}
 			default:
 				break;
 		}
