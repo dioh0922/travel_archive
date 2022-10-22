@@ -147,7 +147,7 @@ function loadImg(e){
 	let evt = e.target.files[0];
 	let exif = EXIF.getData(evt, function(){
 		let result = EXIF.getTag(this, "Orientation");
-		if(result != void 0){			
+		if(result != void 0){
 			load_img.orientation = result;
 		}
 	});
@@ -175,7 +175,7 @@ function saveImg(){
 	axios.post("./api/addImg.php", post_data).then(res => {
 		if(res.data.result == 1){
 			open_wnd.close();
-			initExistPin(load_img.caetgory);
+			initExistPin(load_img.category);
 		}else{
 			throw new Error(res.data.message);
 		}
