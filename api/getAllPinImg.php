@@ -1,7 +1,7 @@
 <?php
 require(dirname(__FILE__)."/../vendor/autoload.php");
 use Src\Photo;
-$result = ["result" => 0, "list" => []];
+$result = ["result" => 0];
 try{
 	$photo = new Photo;
 	$id = 0;

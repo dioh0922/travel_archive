@@ -38,20 +38,28 @@ class Photo{
 		$data = base64_decode($bin);
 		$image = imagecreatefromstring($data);
 		$file_info = getimagesizefromstring($data);
-		$canvas = imagecreatetruecolor($file_info[0] * self::RESIZE_RATE, $file_info[1] * self::RESIZE_RATE);
+		$src_width = $file_info[0];
+		$src_height = $file_info[1];
+
+		if($orientation == self::MODE_90_DEGREE
+		|| $orientation == self::MODE_270_DEGREE){
+			$src_width = $file_info[1];
+			$src_height = $file_info[0];
+		}
 
 		switch($orientation){
 			case self::MODE_90_DEGREE:
-				$canvas = imagerotate($canvas, 270, 0);
+				$image = imagerotate($image, 270, 0);
 				break;
 			case self::MODE_270_DEGREE:
-				$canvas = imagerotate($canvas, 90, 0);
+				$image = imagerotate($image, 90, 0);
 				break;
 			case self::MODE_180_DEGREE:
-				$canvas = imagerotate($canvas, 180, 0);
+				$image = imagerotate($image, 180, 0);
 			default:
 				break;
 		}
+		$canvas = imagecreatetruecolor($src_width * self::RESIZE_RATE, $src_height * self::RESIZE_RATE);
 
 		imagecopyresampled(
 			$canvas,
@@ -60,10 +68,10 @@ class Photo{
 			0,
 			0,
 			0,
-			$file_info[0] * self::RESIZE_RATE,
-			$file_info[1] * self::RESIZE_RATE,
-			$file_info[0],
-			$file_info[1]
+			$src_width * self::RESIZE_RATE,
+			$src_height * self::RESIZE_RATE,
+			$src_width,
+			$src_height
 		);
 
 		switch($file_info[2]){
