@@ -1,4 +1,5 @@
 import axios from "axios";
+import EXIF from "exif-js";
 import {PinForm} from "./form_module.js";
 
 let app = null;
@@ -9,7 +10,8 @@ let load_img = {
 	type: "",
 	name: "",
 	bin: "",
-	category: 0
+	category: 0,
+	orientation: 0	/* 画像の読み込み方向 スマホ系は画素でなく、ここで表示を決めている */
 };
 
 let open_pin = {
@@ -76,7 +78,7 @@ function categorySelect(e){
 }
 window.categorySelect = categorySelect;
 
-function 	initExistPin(category){
+function initExistPin(category){
 	load_img.category = category;
 	let post_data = new FormData();
 	post_data.append("category", category);
@@ -104,7 +106,7 @@ function 	initExistPin(category){
 	});
 }
 
-function 	search(e){
+function search(e){
 	let post_data = new FormData();
 	post_data.append("method", "getStations");
 	post_data.append("name", e.target.value);
@@ -143,6 +145,12 @@ window.search = search;
 
 function loadImg(e){
 	let evt = e.target.files[0];
+	let exif = EXIF.getData(evt, function(){
+		let result = EXIF.getTag(this, "Orientation");
+		if(result != void 0){
+			load_img.orientation = result;
+		}
+	});
 	let reader = new FileReader();
 	reader.onload = () => {
 		let result = reader.result.split(",");
@@ -160,13 +168,14 @@ function saveImg(){
 	post_data.append("name", load_img.name);
 	post_data.append("bin", load_img.bin);
 	post_data.append("category", load_img.category);
+	post_data.append("orientation", load_img.orientation);
 	post_data.append("lat", open_pin.x);
 	post_data.append("lng", open_pin.y);
 	post_data.append("point", open_pin.name);
 	axios.post("./api/addImg.php", post_data).then(res => {
 		if(res.data.result == 1){
 			open_wnd.close();
-			initExistPin(load_img.caetgory);
+			initExistPin(load_img.category);
 		}else{
 			throw new Error(res.data.message);
 		}
