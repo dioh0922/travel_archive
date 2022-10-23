@@ -28,7 +28,7 @@ let open_pin = {
 		mapTypeId: "roadmap" /* 地図の種類 */
 	};
 	map = new window.google.maps.Map(document.getElementById('map'), Options);
-	initExistPin(1);
+	initExistPin(-1);
 
 	/*
 	const form = createApp({
