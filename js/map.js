@@ -71,6 +71,15 @@ function closeDialog(){
 	document.getElementById("dialog-background").style.display = "none";
 }
 window.closeDialog = closeDialog;
+function closeLoading(){
+	document.getElementById("loading-spinner").style.display = "none";
+}
+window.closeLoading = closeLoading;
+function openLoading(){
+	document.getElementById("loading-spinner").style.display = "block";
+}
+window.openLoading = openLoading;
+
 
 function categorySelect(e){
 	document.getElementById("st-name").value = "";
