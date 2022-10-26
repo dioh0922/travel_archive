@@ -1,5 +1,4 @@
 import axios from "axios";
-import EXIF from "exif-js";
 import {PinForm} from "./form_module.js";
 
 let app = null;
@@ -157,23 +156,29 @@ window.search = search;
 
 
 function loadImg(e){
-	let evt = e.target.files[0];
-	let exif = EXIF.getData(evt, function(){
-		let result = EXIF.getTag(this, "Orientation");
-		if(result != void 0){
-			load_img.orientation = result;
+	/* exifのライブラリは読み込みまで採りにいかない */
+	import("exif-js").then(res => {
+		const EXIF = res.default.EXIF;
+		console.log(res);
+		console.log(res.EXIF);
+		let evt = e.target.files[0];
+		let exif = EXIF.getData(evt, function(){
+			let result = EXIF.getTag(this, "Orientation");
+			if(result != void 0){
+				load_img.orientation = result;
+			}
+		});
+		let reader = new FileReader();
+		reader.onload = () => {
+			let result = reader.result.split(",");
+			load_img.name = evt.name;
+			load_img.type = evt.type;
+			load_img.bin = result[1];
+			document.getElementById("load-status").innerHTML = evt.name;
+			document.getElementById("load-status").style.display = "block";
 		}
+		reader.readAsDataURL(evt);
 	});
-	let reader = new FileReader();
-	reader.onload = () => {
-		let result = reader.result.split(",");
-		load_img.name = evt.name;
-		load_img.type = evt.type;
-		load_img.bin = result[1];
-		document.getElementById("load-status").innerHTML = evt.name;
-		document.getElementById("load-status").style.display = "block";
-	}
-	reader.readAsDataURL(evt);
 }
 window.loadImg = loadImg;
 
