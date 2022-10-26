@@ -5,13 +5,180 @@ body { height: 100% }
 	width: 100%;
 }
 .pin-photo{
-	width: 10%;
-	height: 20%;
+	width: 25%;
+	height: 25%;
 }
 #img-dialog{
 	z-index:4;
 	top:0;
 }
+
+.upload-form{
+	margin-top: 10px;
+}
+
+.upload-file{
+	display: none;
+}
+#load-status{
+	display:none;
+}
+
+/* From uiverse.io by @mrhyddenn */
+.icon-btn {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #cdcdcd;
+  background: white;
+  border-radius: 25px;
+  overflow: hidden;
+  position: relative;
+  transition: width 0.2s ease-in-out;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.add-btn:hover {
+  width: 120px;
+}
+
+.add-btn::before,
+.add-btn::after {
+  transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
+  content: "";
+  position: absolute;
+  height: 4px;
+  width: 10px;
+  top: calc(50% - 2px);
+  background: seagreen;
+}
+
+.add-btn::after {
+  right: 14px;
+  overflow: hidden;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.add-btn::before {
+  left: 14px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.icon-btn:focus {
+  outline: none;
+}
+
+.btn-txt {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.add-btn:hover::before,
+.add-btn:hover::after {
+  width: 4px;
+  border-radius: 2px;
+}
+
+.add-btn:hover .btn-txt {
+  opacity: 1;
+}
+
+.add-icon::after,
+.add-icon::before {
+  transition: all 0.2s ease-in-out;
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 2px;
+  top: calc(50% - 10px);
+  background: seagreen;
+  overflow: hidden;
+}
+
+.add-icon::before {
+  left: 22px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.add-icon::after {
+  right: 22px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.add-btn:hover .add-icon::before {
+  left: 15px;
+  height: 4px;
+  top: calc(50% - 2px);
+}
+
+.add-btn:hover .add-icon::after {
+  right: 15px;
+  height: 4px;
+  top: calc(50% - 2px);
+}
+
+/* From uiverse.io by @aasisodiya */
+.img-disp-btn {
+ background-color: #eee;
+ border: none;
+ padding: 0.5rem;
+ font-size: 0.85rem;
+ width: 10em;
+ margin-bottom: 10px;
+ border-radius: 1rem;
+ color: lightcoral;
+ box-shadow: 0 0.4rem #dfd9d9;
+ cursor: pointer;
+}
+
+.img-disp-btn:active {
+ color: white;
+ box-shadow: 0 0.2rem #dfd9d9;
+ transform: translateY(0.2rem);
+}
+
+.img-disp-btn:hover:not(:disabled) {
+ background: lightcoral;
+ color: white;
+ text-shadow: 0 0.1rem #bcb4b4;
+}
+
+.img-disp-btn:disabled {
+ cursor: auto;
+ color: grey;
+}
+
+.upload-btn {
+ background-color: #cfc;
+ border: none;
+ padding: 0.5rem;
+ font-size: 0.85rem;
+ width: 10em;
+ margin-bottom: 10px;
+ border-radius: 1rem;
+ box-shadow: 0 0.4rem #d0EDd0;
+ cursor: pointer;
+}
+
+.upload-btn:active {
+ box-shadow: 0 0.2rem #dfd9d9;
+ transform: translateY(0.2rem);
+}
+
+.upload-btn:hover:not(:disabled) {
+ background: #92F07F;
+ text-shadow: 0 0.1rem #bcb4b4;
+}
+
+.upload-btn:disabled {
+ cursor: auto;
+ color: grey;
+}
+
 
 dialog{
 	position: absolute;
@@ -118,4 +285,66 @@ dialog[open] {
 }
 .cp-iptxt input[type=text]:focus + i {
 	color: #da3c41;
+}
+
+#loading-spinner{
+	display: none;
+	position: absolute;
+	top :0;
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 3;
+	width: 100%;
+	height: 200%;
+}
+.spinner {
+	margin: 100px auto;
+	width: 100px;
+	height: 200px;
+	text-align: center;
+	font-size: 10px;
+}
+
+.spinner > div {
+	background-color: #1bF7FF;
+	height: 100%;
+	width: 16px;
+	display: inline-block;
+
+	-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+	animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+	-webkit-animation-delay: -1.1s;
+	animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+	-webkit-animation-delay: -1.0s;
+	animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+	-webkit-animation-delay: -0.9s;
+	animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+	0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+	20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes sk-stretchdelay {
+	0%, 40%, 100% {
+		transform: scaleY(0.4);
+		-webkit-transform: scaleY(0.4);
+	}  20% {
+		transform: scaleY(1.0);
+		-webkit-transform: scaleY(1.0);
+	}
 }

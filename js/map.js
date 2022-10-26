@@ -71,6 +71,15 @@ function closeDialog(){
 	document.getElementById("dialog-background").style.display = "none";
 }
 window.closeDialog = closeDialog;
+function closeLoading(){
+	document.getElementById("loading-spinner").style.display = "none";
+}
+window.closeLoading = closeLoading;
+function openLoading(){
+	document.getElementById("loading-spinner").style.display = "block";
+}
+window.openLoading = openLoading;
+
 
 function categorySelect(e){
 	document.getElementById("st-name").value = "";
@@ -82,7 +91,9 @@ function initExistPin(category){
 	load_img.category = category;
 	let post_data = new FormData();
 	post_data.append("category", category);
+	openLoading();
 	axios.post("./api/getExistRecord.php", post_data).then(res => {
+		closeLoading();
 		if(res.data.result == 1){
 			if(marker.length > 0){
 				marker.forEach((mark, i) => {
@@ -110,7 +121,9 @@ function search(e){
 	let post_data = new FormData();
 	post_data.append("method", "getStations");
 	post_data.append("name", e.target.value);
+	openLoading();
 	axios.post("https://express.heartrails.com/api/json/", post_data).then(res => {
+		closeLoading();
 		if(res.data.response.station != void 0){
 			let tmp = res.data.response.station[0];
 
@@ -157,6 +170,8 @@ function loadImg(e){
 		load_img.name = evt.name;
 		load_img.type = evt.type;
 		load_img.bin = result[1];
+		document.getElementById("load-status").innerHTML = evt.name;
+		document.getElementById("load-status").style.display = "block";
 	}
 	reader.readAsDataURL(evt);
 }
@@ -172,7 +187,9 @@ function saveImg(){
 	post_data.append("lat", open_pin.x);
 	post_data.append("lng", open_pin.y);
 	post_data.append("point", open_pin.name);
+	openLoading();
 	axios.post("./api/addImg.php", post_data).then(res => {
+		closeLoading();
 		if(res.data.result == 1){
 			open_wnd.close();
 			initExistPin(load_img.category);
@@ -189,7 +206,9 @@ function openImgDialog(id){
 	let post_data = new FormData();
 	post_data.append("pin_id", id);
 	post_data.append("category", load_img.category);
+	openLoading();
 	axios.post("./api/getAllPinImg.php", post_data).then(res => {
+		closeLoading();
 		if(res.data.result == 1){
 			document.getElementById("img-preview").innerHTML = res.data.html;
 			document.getElementById("img-dialog").show();
@@ -219,7 +238,9 @@ function markerInfo(marker, html, name){
 function login(){
 	let post_data = new FormData();
 	post_data.append("pass", document.getElementById("pass").value);
+	openLoading();
 	axios.post("../util_api/login.php", post_data).then(res => {
+		closeLoading();
 		if(res.data.result == 1){
 			location.reload();
 		}else{
