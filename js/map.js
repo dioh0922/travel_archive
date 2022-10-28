@@ -174,8 +174,8 @@ function loadImg(e){
 			load_img.name = evt.name;
 			load_img.type = evt.type;
 			load_img.bin = result[1];
-			document.getElementById("load-status").innerHTML = evt.name;
-			document.getElementById("load-status").style.display = "block";
+			document.getElementById("file-preview").src = reader.result;
+			document.getElementById("file-preview").style.display = "block";
 		}
 		reader.readAsDataURL(evt);
 	});

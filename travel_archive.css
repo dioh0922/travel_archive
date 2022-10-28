@@ -20,8 +20,10 @@ body { height: 100% }
 .upload-file{
 	display: none;
 }
-#load-status{
+#file-preview{
 	display:none;
+	width: 20%;
+	height: 20%;
 }
 
 /* From uiverse.io by @mrhyddenn */

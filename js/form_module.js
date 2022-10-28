@@ -9,7 +9,7 @@ const upload_form = `
 	<div class="add-icon"></div>
 	<label for="upload-file" class="btn-txt">写真の追加</label>
 </button>
-<div id="load-status"></div>
+<img id="file-preview"/>
 <input type="file" id="upload-file" class="upload-file" name="img" onchange="loadImg(event)"/><br>
 <input type="button" class="upload-form upload-btn" value="追加" onclick="saveImg()"/><br>
 `;
