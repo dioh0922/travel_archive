@@ -137,12 +137,13 @@ function searchGeocode(e){
 		{address: target_position, region: "jp"},
 		function(res, sts){
 			if(sts == google.maps.GeocoderStatus.OK){
-				map.setCenter(res[0].geometry.location);
+				let target_location = res[0].geometry.location;
+				map.setCenter(target_location);
 				if(marker.find(item => item.name == target_position) == void 0){
 					let mark = new google.maps.Marker({
 						map: map,
 						title: target_position,
-						position: res[0].geometry.location
+						position: target_location
 					});
 
 					let info_wnd = new google.maps.InfoWindow({
@@ -151,8 +152,8 @@ function searchGeocode(e){
 					});
 					google.maps.event.addListener(mark, "click", function(event){
 						open_pin.name = target_position;
-						open_pin.y = res[0].geometry.location.lat();
-						open_pin.x = res[0].geometry.location.lng();
+						open_pin.y = target_location.lat();
+						open_pin.x = target_location.lng();
 						info_wnd.open(window.map, mark);
 						open_wnd = info_wnd;
 					});
