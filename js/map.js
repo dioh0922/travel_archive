@@ -113,54 +113,65 @@ function initExistPin(category){
 		}else{
 		}
 	}).catch(er => {
+		openDialog(er.message);
 	});
 }
 
 function search(e){
-	let post_data = new FormData();
-	post_data.append("method", "getStations");
-	post_data.append("name", e.target.value);
-	openLoading();
-	axios.post("https://express.heartrails.com/api/json/", post_data).then(res => {
-		closeLoading();
-		if(res.data.response.station != void 0){
-			let tmp = res.data.response.station[0];
-
-			if(marker.find(item => item.name == tmp.name) == void 0){
-				const latlng = new google.maps.LatLng(tmp.y, tmp.x);
-				let mark = new google.maps.Marker({
-					position: latlng,
-					map: map,
-					title: tmp.name
-				});
-
-				let info_wnd = new google.maps.InfoWindow({
-					content: PinForm.loadNewPinForm(tmp.name),
-					maxWIdth: 200
-				});
-				google.maps.event.addListener(mark, "click", function(event){
-					open_pin.name = tmp.name;
-					open_pin.y = tmp.y;
-					open_pin.x = tmp.x;
-					info_wnd.open(window.map, mark);
-					open_wnd = info_wnd;
-				});
-				marker.push({pin: mark, name: tmp.name});
-			}
+	axios.get("./api/cntGoogleAccess.php").then(res => {
+		if(res.data.result == 1){
+			searchGeocode(e);
+		}else{
+			throw new Error(res.data.message);
 		}
 	}).catch(er => {
-		console.log(er);
+		openDialog(er.message);
 	});
 }
 window.search = search;
+
+function searchGeocode(e){
+	let geocoder = new google.maps.Geocoder();
+	let target_position = e.target.value;
+	geocoder.geocode(
+		{address: target_position, region: "jp"},
+		function(res, sts){
+			if(sts == google.maps.GeocoderStatus.OK){
+				map.setCenter(res[0].geometry.location);
+				if(marker.find(item => item.name == target_position) == void 0){
+					let mark = new google.maps.Marker({
+						map: map,
+						title: target_position,
+						position: res[0].geometry.location
+					});
+
+					let info_wnd = new google.maps.InfoWindow({
+						content: PinForm.loadNewPinForm(target_position),
+						maxWIdth: 200
+					});
+					google.maps.event.addListener(mark, "click", function(event){
+						open_pin.name = target_position;
+						open_pin.y = res[0].geometry.location.lat();
+						open_pin.x = res[0].geometry.location.lng();
+						info_wnd.open(window.map, mark);
+						open_wnd = info_wnd;
+					});
+					marker.push({pin: mark, name: target_position});
+				}
+
+			}
+		}
+	);
+
+}
+window.searchGeocode = searchGeocode;
 
 
 function loadImg(e){
 	/* exifのライブラリは読み込みまで採りにいかない */
 	import("exif-js").then(res => {
 		const EXIF = res.default.EXIF;
-		console.log(res);
-		console.log(res.EXIF);
+
 		let evt = e.target.files[0];
 		let exif = EXIF.getData(evt, function(){
 			let result = EXIF.getTag(this, "Orientation");
