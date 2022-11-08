@@ -1,6 +1,8 @@
 import axios from "axios";
 import {PinForm} from "./form_module.js";
 
+const DEFAULT_ZOOM = 8;
+
 let app = null;
 let map = null;
 let marker = [];
@@ -9,7 +11,10 @@ let load_img = {
 	type: "",
 	name: "",
 	bin: "",
-	category: 0,
+	category: {
+		id: 0,
+		zoom_level: DEFAULT_ZOOM
+	},
 	orientation: 0	/* 画像の読み込み方向 スマホ系は画素でなく、ここで表示を決めている */
 };
 
@@ -27,7 +32,7 @@ let open_pin = {
 		mapTypeId: "roadmap" /* 地図の種類 */
 	};
 	map = new window.google.maps.Map(document.getElementById('map'), Options);
-	initExistPin(-1);
+	initExistPin(-1, DEFAULT_ZOOM);
 
 	/*
 	const form = createApp({
@@ -80,20 +85,22 @@ function openLoading(){
 window.openLoading = openLoading;
 
 
-function categorySelect(e){
+function categorySelect(e, zoom){
 	document.getElementById("st-name").value = "";
-	initExistPin(e.target.value);
+	initExistPin(e.target.value, zoom);
 }
 window.categorySelect = categorySelect;
 
-function initExistPin(category){
-	load_img.category = category;
+function initExistPin(category, zoom){
+	load_img.category.id = category;
+	load_img.category.zoom_level = zoom;
 	let post_data = new FormData();
 	post_data.append("category", category);
 	openLoading();
 	axios.post("./api/getExistRecord.php", post_data).then(res => {
 		closeLoading();
 		if(res.data.result == 1){
+			map.setZoom(zoom);
 			if(marker.length > 0){
 				marker.forEach((mark, i) => {
 					mark.pin.setMap(null);
@@ -199,7 +206,7 @@ function saveImg(){
 	post_data.append("type", load_img.type);
 	post_data.append("name", load_img.name);
 	post_data.append("bin", load_img.bin);
-	post_data.append("category", load_img.category);
+	post_data.append("category", load_img.category.id);
 	post_data.append("orientation", load_img.orientation);
 	post_data.append("lat", open_pin.x);
 	post_data.append("lng", open_pin.y);
@@ -209,7 +216,7 @@ function saveImg(){
 		closeLoading();
 		if(res.data.result == 1){
 			open_wnd.close();
-			initExistPin(load_img.category);
+			initExistPin(load_img.category.id, load_img.category.zoom_level);
 		}else{
 			throw new Error(res.data.message);
 		}
@@ -222,7 +229,7 @@ window.saveImg = saveImg;
 function openImgDialog(id){
 	let post_data = new FormData();
 	post_data.append("pin_id", id);
-	post_data.append("category", load_img.category);
+	post_data.append("category", load_img.category.id);
 	openLoading();
 	axios.post("./api/getAllPinImg.php", post_data).then(res => {
 		closeLoading();
