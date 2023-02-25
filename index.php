@@ -59,13 +59,17 @@ $env->load();
 		</div>
 	<?php } ?>
 
-	HeartRails Express
 	<?php if(!$limit){ ?>
 		<div>
 			<div class="cp-iptxt">
 				<input type="text" id="st-name" value="" placeholder="駅名を入力" onCHange="search(event)"/>
 				<i class="material-icons">location_on</i>
 			</div>
+
+			<div class="">
+				<input type="button" value="描画" onClick="showCircle()"/>
+			</div>
+
 			<div class="tab-wrap">
 				<?php foreach ($category_list as $key => $category_obj) { ?>
 					<input type="radio" id="tab<?php echo $category_obj["category_id"]; ?>" name="category" class="tab-switch" onChange="categorySelect(event, <?php echo $category_obj['map_zoom_level'] ?>)" value="<?php echo $category_obj["category_id"]; ?>"/>

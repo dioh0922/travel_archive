@@ -34,31 +34,6 @@ let open_pin = {
 	map = new window.google.maps.Map(document.getElementById('map'), Options);
 	initExistPin(-1, DEFAULT_ZOOM);
 
-	/*
-	const form = createApp({
-		data(){
-			return{
-				category:[]
-			};
-		},
-		methods:{
-			initAllCategory(){
-				axios.get("./api/getAllCategory.php").then(res => {
-					if(res.data.result == 1){
-						this.category = res.data.list;
-					}
-				}).catch(er => {
-
-				});
-			},
-		mounted(){
-			this.initAllCategory();
-		}
-	});
-
-	form.component("container", Container);
-	form.mount("#app-container");
-	*/
 });
 
 let open_wnd = null;
@@ -275,3 +250,18 @@ function login(){
 	});
 }
 window.login = login;
+
+function showCircle(){
+	let mylang = map.getCenter();
+	new google.maps.Circle({
+		center: mylang,
+		fillColor: '#FF0000',
+		fillOpacity: 0.5,
+		map: map,
+		radius: 95330,
+		strokeColor: '#FF0000',
+		strokeOpacity: 1,
+		strokeWeight: 1
+	});
+}
+window.showCircle = showCircle;
