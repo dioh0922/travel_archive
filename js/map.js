@@ -260,12 +260,14 @@ function login(){
 }
 window.login = login;
 
-function showCircle(range){
+function showCircle(range, zoom){
   let mylang = map.getCenter();
   if(circle != null){
     circle.setVisible(false);//非表示にする
     circle = null;
   }
+
+  map.setZoom(zoom);
 
   if(range > 0){
     //起点は東京固定で良い?
