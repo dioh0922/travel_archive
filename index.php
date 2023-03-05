@@ -70,7 +70,13 @@ $env->load();
 
       <div class="">
         <?php foreach($range_list as $key => $range_obj){ ?>
-          <span><?php echo $range_obj["range_label"] ?></span>:<input type="radio" name="range" onClick="showCircle(<?php echo $range_obj["map_range"] ?>, <?php echo $range_obj["g_map_zoom"] ?>)"/>
+          <input type="radio"
+            id="range<?php echo $range_obj["range_id"] ?>"
+            name="range" 
+            class="tab-switch" 
+            onClick="showCircle(<?php echo $range_obj["map_range"] ?>, <?php echo $range_obj["g_map_zoom"] ?>)"
+            />
+          <label class="tab-label" for="range<?php echo $range_obj["range_id"] ?>"><?php echo $range_obj["range_label"] ?></label>
         <?php } ?>
       </div>
 

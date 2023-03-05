@@ -261,7 +261,6 @@ function login(){
 window.login = login;
 
 function showCircle(range, zoom){
-  let mylang = map.getCenter();
   if(circle != null){
     circle.setVisible(false);//非表示にする
     circle = null;
@@ -272,7 +271,7 @@ function showCircle(range, zoom){
   if(range > 0){
     //起点は東京固定で良い?
     circle = new google.maps.Circle({
-      center: mylang,
+      center: new google.maps.LatLng(35.681391, 139.766103),
       fillColor: '#FF0000',
       fillOpacity: 0.2, //塗りつぶし透明度
       map: map,
