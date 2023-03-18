@@ -32,8 +32,8 @@ if(!$limit){
   $category_list = $category->getCategory();
   $range = new Src\Range();
   $range_list = $range->getRange();
-  $airport = new Src\Airport();
-  $depature_list = $airport->getAllDeparture();
+  $point = new Src\Point();
+  $depature_list = $point->getAllDeparture();
 }
 
 
@@ -67,8 +67,8 @@ $env->load();
   <?php } ?>
 
   <?php if(!$limit){ ?>
-    <div>
-      <div class="cp-iptxt menu-wrap">
+    <div class="container">
+      <div class="menu-wrap">
         <ul class="menu-list">
           <li class="">
             <a href="#" class="dropdown-item">範囲</a>          
@@ -91,9 +91,12 @@ $env->load();
               
               <?php foreach ($depature_list as $key => $departure_obj): ?>
                 <li class="dropdown-item">
-                  <a href="#" class="dropdown-item" onClick="drawLine(<?php echo $departure_obj["departure_id"] ?>)"><?php echo $departure_obj["airport_name"] ?></a>
+                  <a href="#" class="dropdown-item" onClick="drawLine(<?php echo $departure_obj["pin_id"] ?>)"><?php echo $departure_obj["station_name"] ?></a>
                 </li>    
               <?php endforeach ?> 
+                <li class="dropdown-item">
+                  <a href="#" class="dropdown-item" onclick="drawLine(0)">解除</a>
+                </li>
             </ul>
           </li>
         </ul>        

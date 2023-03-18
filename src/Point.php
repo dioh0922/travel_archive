@@ -40,4 +40,10 @@ class Point{
 		->find_array();
 		return $list;
 	}
+	public function getAllDeparture(){
+		return ORM::for_table("travel_point")
+		->select("*")
+		->where("is_departure", 1)
+		->find_array();
+	}
 }
