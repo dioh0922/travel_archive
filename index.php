@@ -24,11 +24,16 @@ if($current_access != null){
 /*
 アクセスのカウント
 */
+$category_list = [];
+$range_list = [];
+$depature_list = [];
 if(!$limit){
   $category = new Src\Category();
   $category_list = $category->getCategory();
   $range = new Src\Range();
   $range_list = $range->getRange();
+  $airport = new Src\Airport();
+  $depature_list = $airport->getAllDeparture();
 }
 
 
@@ -63,24 +68,44 @@ $env->load();
 
   <?php if(!$limit){ ?>
     <div>
+      <div class="cp-iptxt menu-wrap">
+        <ul class="menu-list">
+          <li class="">
+            <a href="#" class="dropdown-item">範囲</a>          
+            <ul class="dropdown-list">
+              <?php foreach($range_list as $key => $range_obj): ?>
+              <li  >
+                  <a href="#" 
+                  class="dropdown-item" 
+                  onClick="showCircle(<?php echo $range_obj["map_range"] ?>, <?php echo $range_obj["g_map_zoom"] ?>)"><?php echo $range_obj["range_label"] ?></a>
+                </li>
+              <?php endforeach ?>
+            </ul>
+          </li>
+        </ul>
+
+        <ul class="menu-list">
+          <li class="menu-list">
+            <a href="#" class="dropdown-item">フライト</a>
+            <ul class="dropdown-list">
+              
+              <?php foreach ($depature_list as $key => $departure_obj): ?>
+                <li class="dropdown-item">
+                  <a href="#" class="dropdown-item" onClick="drawLine(<?php echo $departure_obj["departure_id"] ?>)"><?php echo $departure_obj["airport_name"] ?></a>
+                </li>    
+              <?php endforeach ?> 
+            </ul>
+          </li>
+        </ul>        
+      </div>
+
+
       <div class="cp-iptxt">
         <input type="text" id="st-name" value="" placeholder="駅名を入力" onCHange="search(event)"/>
         <i class="material-icons">location_on</i>
       </div>
 
-      <div class="">
-        <?php foreach($range_list as $key => $range_obj){ ?>
-          <input type="radio"
-            id="range<?php echo $range_obj["range_id"] ?>"
-            name="range" 
-            class="tab-switch" 
-            onClick="showCircle(<?php echo $range_obj["map_range"] ?>, <?php echo $range_obj["g_map_zoom"] ?>)"
-            />
-          <label class="tab-label" for="range<?php echo $range_obj["range_id"] ?>"><?php echo $range_obj["range_label"] ?></label>
-        <?php } ?>
-      </div>
-
-      <div class="tab-wrap">
+      <div class="tab-wrap ">
         <?php foreach ($category_list as $key => $category_obj) { ?>
           <input type="radio" id="tab<?php echo $category_obj["category_id"]; ?>" name="category" class="tab-switch" onChange="categorySelect(event, <?php echo $category_obj['map_zoom_level'] ?>)" value="<?php echo $category_obj["category_id"]; ?>"/>
           <label class="tab-label" for="tab<?php echo $category_obj["category_id"]; ?>"><?php echo $category_obj["category_title"]; ?></label>
