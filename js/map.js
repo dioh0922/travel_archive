@@ -5,7 +5,16 @@ const DEFAULT_ZOOM = 8;
 
 let app = null;
 let map = null;
+let circle = null;
 let marker = [];
+
+const area_range = [
+  {
+    //東京駅からの範囲
+    price: 3000,
+    range: 95330
+  }
+];
 
 let load_img = {
   type: "",
@@ -250,3 +259,27 @@ function login(){
   });
 }
 window.login = login;
+
+function showCircle(range, zoom){
+  if(circle != null){
+    circle.setVisible(false);//非表示にする
+    circle = null;
+  }
+
+  map.setZoom(zoom);
+
+  if(range > 0){
+    //起点は東京固定で良い?
+    circle = new google.maps.Circle({
+      center: new google.maps.LatLng(35.681391, 139.766103),
+      fillColor: '#FF0000',
+      fillOpacity: 0.2, //塗りつぶし透明度
+      map: map,
+      radius: range,  //半径
+      strokeColor: '#FF0000',
+      strokeOpacity: 1,
+      strokeWeight: 1
+    });
+  }
+}
+window.showCircle = showCircle;
