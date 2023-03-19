@@ -20,8 +20,8 @@ let load_img = {
 
 let open_pin = {
 	name: "",
-	x: 0,
-	y: 0
+	lat: 0,  //経度
+	lng: 0   //緯度
 };
 
 (window.onload = () => {
@@ -134,8 +134,8 @@ function searchGeocode(e){
 					});
 					google.maps.event.addListener(mark, "click", function(event){
 						open_pin.name = target_position;
-						open_pin.y = target_location.lat();
-						open_pin.x = target_location.lng();
+						open_pin.lat = target_location.lat(); //経度
+            open_pin.lng = target_location.lng(); //緯度
 						info_wnd.open(window.map, mark);
 						open_wnd = info_wnd;
 					});
@@ -183,8 +183,8 @@ function saveImg(){
 	post_data.append("bin", load_img.bin);
 	post_data.append("category", load_img.category.id);
 	post_data.append("orientation", load_img.orientation);
-	post_data.append("lat", open_pin.y);
-	post_data.append("lng", open_pin.x);
+	post_data.append("lat", open_pin.lat); //lat:経度
+	post_data.append("lng", open_pin.lng); //lng:緯度
 	post_data.append("point", open_pin.name);
 	openLoading();
 	axios.post("./api/addImg.php", post_data).then(res => {
