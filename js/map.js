@@ -85,7 +85,7 @@ function initExistPin(category, zoom){
 			arr = res.data.list;
 			arr.forEach((item, i) => {
 				let tmp = new google.maps.Marker({
-					position: new google.maps.LatLng(item.lng, item.lat),
+					position: new google.maps.LatLng(item.lat, item.lng),
 					map: map
 				});
 				marker.push({pin: tmp, name: item.station_name});
@@ -183,8 +183,8 @@ function saveImg(){
 	post_data.append("bin", load_img.bin);
 	post_data.append("category", load_img.category.id);
 	post_data.append("orientation", load_img.orientation);
-	post_data.append("lat", open_pin.x);
-	post_data.append("lng", open_pin.y);
+	post_data.append("lat", open_pin.y);
+	post_data.append("lng", open_pin.x);
 	post_data.append("point", open_pin.name);
 	openLoading();
 	axios.post("./api/addImg.php", post_data).then(res => {
