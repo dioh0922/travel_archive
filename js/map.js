@@ -34,31 +34,6 @@ let open_pin = {
 	map = new window.google.maps.Map(document.getElementById('map'), Options);
 	initExistPin(-1, DEFAULT_ZOOM);
 
-	/*
-	const form = createApp({
-		data(){
-			return{
-				category:[]
-			};
-		},
-		methods:{
-			initAllCategory(){
-				axios.get("./api/getAllCategory.php").then(res => {
-					if(res.data.result == 1){
-						this.category = res.data.list;
-					}
-				}).catch(er => {
-
-				});
-			},
-		mounted(){
-			this.initAllCategory();
-		}
-	});
-
-	form.component("container", Container);
-	form.mount("#app-container");
-	*/
 });
 
 let open_wnd = null;
