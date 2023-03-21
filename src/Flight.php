@@ -29,6 +29,12 @@ class Flight{
     $route->save();
     return $route->id();
   }
+  
+  public function chkExistRoute(int $departure, int $destination){
+    return ORM::for_table("flight_route")
+    ->where(["base_airport_id" => $departure, "destination_id" => $destination])
+    ->find_one();
+  }
 }
 
 ?>

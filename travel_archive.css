@@ -424,6 +424,15 @@ dialog[open] {
   border-radius: 4px;
 }
 
+.edit-form .dialog{
+  width: 40%;
+}
+
+.dialog-content{
+  width: 80%;
+  padding-left: 20%;
+}
+
 .edit-form button{
   width: 60%;
   height: 40px;

@@ -431,6 +431,9 @@ function addDestAirport(){
       openLoading(); 
       axios.post("./api/addFlightRoute.php", post_data).then(res => {
         closeLoading();
+        if(res.data.result == -1){
+          throw new Error(res.data.message);
+        }
       }).catch(er => {
         openDialog(er.message);
       })

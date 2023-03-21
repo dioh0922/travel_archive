@@ -143,17 +143,20 @@ $env->load();
 
     <div class="edit-form">
       <dialog class="dialog" id="add-airport-dialog">
-        <input class="tr-form" id="destination-name" type="text" placeholder="〇〇空港">
-        <select class="tr-form tr-form-select" id="departure-select">
-          <option value="0">---</option>
-            <?php foreach ($depature_list as $key => $departure_obj): ?>
-              <option value='<?php echo $departure_obj["pin_id"] ?>'>
-                <?php echo $departure_obj["station_name"] ?>
-              </option>
-            <?php endforeach ?> 
-        </select>
-        <button class="submit-btn" onClick="addDestAirport()">追加</button>
-        <button class="close-btn" onClick="closeAirportDlg()">閉じる</button>
+        <div class="dialog-content">
+          <p>空港を追加</p>
+          <input class="tr-form" id="destination-name" type="text" placeholder="〇〇空港">
+          <select class="tr-form tr-form-select" id="departure-select">
+            <option value="0">---</option>
+              <?php foreach ($depature_list as $key => $departure_obj): ?>
+                <option value='<?php echo $departure_obj["pin_id"] ?>'>
+                  <?php echo $departure_obj["station_name"] ?>
+                </option>
+              <?php endforeach ?> 
+          </select>
+          <button class="submit-btn" onClick="addDestAirport()">追加</button>
+          <button class="close-btn" onClick="closeAirportDlg()">閉じる</button>
+        </div>
       </dialog>
       <div id="dialog-background"></div>
     </div>
