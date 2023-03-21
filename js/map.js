@@ -1,21 +1,18 @@
 import axios from "axios";
 import {PinForm} from "./form_module.js";
 
-const DEFAULT_ZOOM = 8;
+const DEFAULT_ZOOM = 8; /* google map の初期ズーム */
 
 let app = null;
 let map = null;
 let circle = null;
 let marker = [];
+let open_wnd = null;
+let arr = [];
 
-const area_range = [
-  {
-    //東京駅からの範囲
-    price: 3000,
-    range: 95330
-  }
-];
-
+/**
+ * 送信する画像読み込み用オブジェクト
+ * */
 let load_img = {
   type: "",
   name: "",
@@ -27,10 +24,13 @@ let load_img = {
   orientation: 0  /* 画像の読み込み方向 スマホ系は画素でなく、ここで表示を決めている */
 };
 
+/**
+ *  写真追加用のピン管理オブジェクト
+ * */
 let open_pin = {
   name: "",
-  x: 0,
-  y: 0
+  lat: 0,
+  lng: 0
 };
 
 (window.onload = () => {
@@ -45,36 +45,60 @@ let open_pin = {
 
 });
 
-let open_wnd = null;
-let arr = [];
 
+/**
+ * 
+ * */
 function openDialog(str){
   document.getElementById("img-preview").innerHTML = str;
   document.getElementById("img-dialog").show();
   document.getElementById("dialog-background").style.display = "block";
 }
 window.openDialog = openDialog;
+
+/**
+ * ダイアログの非表示
+ * */
 function closeDialog(){
   document.getElementById("img-dialog").close();
   document.getElementById("dialog-background").style.display = "none";
 }
 window.closeDialog = closeDialog;
-function closeLoading(){
-  document.getElementById("loading-spinner").style.display = "none";
-}
-window.closeLoading = closeLoading;
+
+/**
+ * ローディングアニメーション開始
+ * */
 function openLoading(){
   document.getElementById("loading-spinner").style.display = "block";
 }
 window.openLoading = openLoading;
 
+/**
+ * ローディングアニメーション終了
+ * */
+function closeLoading(){
+  document.getElementById("loading-spinner").style.display = "none";
+}
+window.closeLoading = closeLoading;
 
+
+/**
+ * ピンの取得カテゴリ設定処理
+ * e: イベント
+ * zoom: mapのズームレベル
+ * */
 function categorySelect(e, zoom){
   document.getElementById("st-name").value = "";
   initExistPin(e.target.value, zoom);
 }
 window.categorySelect = categorySelect;
 
+
+/**
+ * 指定したカテゴリのピン配列を取得する処理
+ * category: カテゴリ
+ * zoom: mapのズームレベル
+ * */
 function initExistPin(category, zoom){
   load_img.category.id = category;
   load_img.category.zoom_level = zoom;
@@ -94,7 +118,7 @@ function initExistPin(category, zoom){
       arr = res.data.list;
       arr.forEach((item, i) => {
         let tmp = new google.maps.Marker({
-          position: new google.maps.LatLng(item.lng, item.lat),
+          position: new google.maps.LatLng(item.lat, item.lng),
           map: map
         });
         marker.push({pin: tmp, name: item.station_name});
@@ -108,28 +132,18 @@ function initExistPin(category, zoom){
   });
 }
 
+/**
+ * 入力した地名の位置情報取得処理
+ * e: 検索文字列のイベント
+ * */
 function search(e){
   axios.get("./api/cntGoogleAccess.php").then(res => {
     if(res.data.result == 1){
-      searchGeocode(e);
-    }else{
-      throw new Error(res.data.message);
-    }
-  }).catch(er => {
-    openDialog(er.message);
-  });
-}
-window.search = search;
+      let target_position = e.target.value;
 
-function searchGeocode(e){
-  let geocoder = new google.maps.Geocoder();
-  let target_position = e.target.value;
-  geocoder.geocode(
-    {address: target_position, region: "jp"},
-    function(res, sts){
-      if(sts == google.maps.GeocoderStatus.OK){
-        let target_location = res[0].geometry.location;
-        map.setCenter(target_location);
+      searchGeocode(target_position).then(res => {
+        map.setCenter(res);
+        let target_location = res;
         if(marker.find(item => item.name == target_position) == void 0){
           let mark = new google.maps.Marker({
             map: map,
@@ -143,22 +157,47 @@ function searchGeocode(e){
           });
           google.maps.event.addListener(mark, "click", function(event){
             open_pin.name = target_position;
-            open_pin.y = target_location.lat();
-            open_pin.x = target_location.lng();
+            open_pin.lat = target_location.lat();
+            open_pin.lng = target_location.lng();
             info_wnd.open(window.map, mark);
             open_wnd = info_wnd;
           });
           marker.push({pin: mark, name: target_position});
         }
 
-      }
+      });
+    }else{
+      throw new Error(res.data.message);
     }
-  );
+  }).catch(er => {
+    openDialog(er.message);
+  });
+}
+window.search = search;
 
+/**
+ * GoogleAPIの位置情報取得処理
+ * e: 検索文字列
+ * */
+async function searchGeocode(e){
+  let geocoder = new google.maps.Geocoder();
+  let target_position = e;
+
+  let result = null;
+  await geocoder.geocode({address: target_position, region: "jp"}, function(res, sts){
+    if(sts == google.maps.GeocoderStatus.OK){
+      result = res[0].geometry.location;
+    }
+  });
+
+  return result;
 }
 window.searchGeocode = searchGeocode;
 
-
+/**
+ * 画像読み込み処理
+ * e: 画像選択イベント
+ * */
 function loadImg(e){
   /* exifのライブラリは読み込みまで採りにいかない */
   import("exif-js").then(res => {
@@ -185,6 +224,10 @@ function loadImg(e){
 }
 window.loadImg = loadImg;
 
+/**
+ * 画像保存処理
+ * グローバル変数に各種データは持たせる
+ * */
 function saveImg(){
   let post_data = new FormData();
   post_data.append("type", load_img.type);
@@ -192,8 +235,8 @@ function saveImg(){
   post_data.append("bin", load_img.bin);
   post_data.append("category", load_img.category.id);
   post_data.append("orientation", load_img.orientation);
-  post_data.append("lat", open_pin.x);
-  post_data.append("lng", open_pin.y);
+  post_data.append("lat", open_pin.lat);  //経度
+  post_data.append("lng", open_pin.lng);  //緯度
   post_data.append("point", open_pin.name);
   openLoading();
   axios.post("./api/addImg.php", post_data).then(res => {
@@ -210,6 +253,10 @@ function saveImg(){
 }
 window.saveImg = saveImg;
 
+/**
+ * 画像プレビューダイアログ表示処理
+ * id: ピンのID
+ * */
 function openImgDialog(id){
   let post_data = new FormData();
   post_data.append("pin_id", id);
@@ -230,6 +277,12 @@ function openImgDialog(id){
 }
 window.openImgDialog = openImgDialog;
 
+/**
+ * ピンの情報ダイアログ表示処理
+ * marker: ピンのオブジェクト
+ * html: ダイアログ内容
+ * name: ピンの名称
+ * */
 function markerInfo(marker, html, name){
   let info_wnd = new google.maps.InfoWindow({
     content: html,
@@ -243,6 +296,9 @@ function markerInfo(marker, html, name){
   });
 }
 
+/**
+ * ログイン処理
+ * */
 function login(){
   let post_data = new FormData();
   post_data.append("pass", document.getElementById("pass").value);
@@ -260,6 +316,11 @@ function login(){
 }
 window.login = login;
 
+/**
+ * 限界範囲の表示処理
+ * range: google mapに表示する円の半径
+ * zoom: mapのズームレベル
+ * */
 function showCircle(range, zoom){
   if(circle != null){
     circle.setVisible(false);//非表示にする
@@ -283,3 +344,80 @@ function showCircle(range, zoom){
   }
 }
 window.showCircle = showCircle;
+
+let flight = new google.maps.Polyline({
+  geodesic: true,
+  strokeColor: "#FF0000",
+  strokeOpacity: 1.0,
+  strokeWeight: 2,
+});
+
+/**
+ * 直線表示処理
+ * flg: 表示モード
+ * */
+function drawFlight(id){
+  map.setZoom(6);
+  if(id > 0){
+    let post_data = new FormData();
+    post_data.append("flight_id", id);
+    
+    axios.post("./api/getFlightRoute.php", data).then(res => {
+      flight.setPath([]);
+      flight.setMap(map);
+      flight.setVisible(true);
+
+    }).catch(er => {
+
+    });
+  }else{
+    flight.setMap(null);
+    flight.setVisible(false);
+  }
+}
+window.drawFlight = drawFlight;
+
+/**
+ * 空港追加ダイアログ表示処理
+ * */
+function addAirport(){
+  document.getElementById("add-airport-dialog").show();
+  document.getElementById("dialog-background").style.display = "block";
+}
+window.addAirport = addAirport;
+
+/**
+ * 空港ダイアログ非表示処理
+ * */
+function closeAirportDlg(){
+  document.getElementById("add-airport-dialog").close();
+  document.getElementById("dialog-background").style.display = "none";
+}
+window.closeAirportDlg = closeAirportDlg;
+
+/**
+ * 空港情報追加処理
+ * */
+function addDestAirport(){
+  let airport_name = document.getElementById("destination-name").value;
+  let departure_id = parseInt(document.getElementById("departure-select").value);
+  if(departure_id > 0){
+    closeAirportDlg();
+    searchGeocode(airport_name).then(res => {
+      let post_data = new FormData();
+      post_data.append("departure", departure_id);
+      post_data.append("name", airport_name);
+      post_data.append("lat", res.lat());
+      post_data.append("lng", res.lng());
+      openLoading(); 
+      axios.post("./api/addFlightRoute.php", post_data).then(res => {
+        closeLoading();
+      }).catch(er => {
+        openDialog(er.message);
+      })
+    });
+  }else{
+    focus(document.getElementById("departure-select"));
+  }
+}
+window.addDestAirport = addDestAirport;
