@@ -345,12 +345,15 @@ function showCircle(range, zoom){
 }
 window.showCircle = showCircle;
 
-let flight = new google.maps.Polyline({
-  geodesic: true,
-  strokeColor: "#FF0000",
-  strokeOpacity: 1.0,
-  strokeWeight: 2,
-});
+let flight = {
+  polyline: new google.maps.Polyline({
+    geodesic: true,
+    strokeColor: "#FF0000",
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+  }),
+  pin: null
+}
 
 /**
  * 直線表示処理
@@ -360,19 +363,35 @@ function drawFlight(id){
   map.setZoom(6);
   if(id > 0){
     let post_data = new FormData();
-    post_data.append("flight_id", id);
+    post_data.append("departure_id", id);
     
-    axios.post("./api/getFlightRoute.php", data).then(res => {
-      flight.setPath([]);
-      flight.setMap(map);
-      flight.setVisible(true);
+    axios.post("./api/getFlightRoute.php", post_data).then(res => {
+      let airport_list = [];
+      let tmp = res.data.list;
+      let departure_latlng = new google.maps.LatLng(res.data.departure.lat, res.data.departure.lng)
+      let mark = new google.maps.Marker({
+        map: map,
+        title: res.data.departure.name,
+        position: departure_latlng
+      });
+      flight.pin = mark;
+
+      tmp.forEach(el => {
+        airport_list.push(new google.maps.LatLng(el.lat, el.lng));
+        airport_list.push(departure_latlng);
+      });
+
+      flight.polyline.setPath(airport_list);
+      flight.polyline.setMap(map);
+      flight.polyline.setVisible(true);
 
     }).catch(er => {
-
+      openDialog(er.toString());
     });
   }else{
-    flight.setMap(null);
-    flight.setVisible(false);
+    flight.pin.setMap(null);
+    flight.polyline.setMap(null);
+    flight.polyline.setVisible(false);
   }
 }
 window.drawFlight = drawFlight;

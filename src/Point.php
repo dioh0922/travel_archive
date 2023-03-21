@@ -46,4 +46,13 @@ class Point{
     ->where("is_departure", 1)
     ->find_array();
   }
+  public function getTargetPin(int $id){
+    return ORM::for_table("travel_point")
+    ->select("station_name", "name")
+    ->select("lat")
+    ->select("lng")
+    ->where("pin_id", $id)
+    ->find_one()
+    ->as_array();
+  }
 }

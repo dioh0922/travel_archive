@@ -13,8 +13,12 @@ class Flight{
 
   public function getAllRoute(int $id){
     return ORM::for_table("flight_route")
-    ->select("*")
-    ->where("station_name", $st_name)
+    ->select("travel_point.lat", "lat")
+    ->select("travel_point.lng", "lng")
+    ->select("travel_point.station_name", "name")
+    ->join("travel_point", ["travel_point.pin_id", "=", "flight_route.destination_id"])
+    ->where("base_airport_id", $id) 
+    ->group_by("travel_point.pin_id")
     ->find_array();
   }
 
