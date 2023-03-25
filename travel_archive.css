@@ -1,29 +1,29 @@
 html { height: 100% }
 body { height: 100% }
 #map{
-	height: 80%;
-	width: 100%;
+  height: 80%;
+  width: 100%;
 }
 .pin-photo{
-	width: 25%;
-	height: 25%;
+  width: 25%;
+  height: 25%;
 }
-#img-dialog{
-	z-index:4;
-	top:0;
+#img-dialog, #add-airport-dialog{
+  z-index:4;
+  top:0;
 }
 
 .upload-form{
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .upload-file{
-	display: none;
+  display: none;
 }
 #file-preview{
-	display:none;
-	width: 20%;
-	height: 20%;
+  display:none;
+  width: 20%;
+  height: 20%;
 }
 
 /* From uiverse.io by @mrhyddenn */
@@ -183,71 +183,71 @@ body { height: 100% }
 
 
 dialog{
-	position: absolute;
-	width: 70%;
-	margin-top: 10%;
-	border:0;
-	border-radius:0.6rem;
-	box-shadow: 0 0 1em black;
+  position: absolute;
+  width: 70%;
+  margin-top: 10%;
+  border:0;
+  border-radius:0.6rem;
+  box-shadow: 0 0 1em black;
 }
 dialog::backdrop {
   /* 背景を半透明のブラックにする */
-	background-color: red;
+  background-color: red;
 
 }
 dialog + .backdrop {
-	position:fixed;
+  position:fixed;
   background-color: rgba(0, 0, 0, 0.4);
 }
 dialog[open] {
   animation: slide-up 0.4s ease-out;
 }
 #dialog-background{
-	display:none;
-	position: absolute;
-	top :0;
-	background-color: rgba(0, 0, 0, 0.4);
-	z-index: 3;
-	width: 100%;
-	height: 100%;
+  display:none;
+  position: absolute;
+  top :0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 3;
+  width: 100%;
+  height: 100%;
 }
 
 .tab-wrap{
-	display:flex;
-	flex-wrap: wrap;
-	margin: 20px 0;
+  display:flex;
+  flex-wrap: wrap;
+  margin: 20px 0;
 }
 
 .tab-wrap:after{
-	content: "";
-	width: 100%;
-	height: 3px;
-	background: #325A8C;
-	display: block;
-	order: -1;
+  content: "";
+  width: 100%;
+  height: 3px;
+  background: #325A8C;
+  display: block;
+  order: -1;
 }
 
 .tab-label{
-	color: white;
-	background: lightgray;
-	font-weight: bold;
-	white-space: nowrap;
-	text-align: center;
-	padding: 10px .5em;
-	order: -1;
-	position: relative;
-	z-index: 1;
-	cursor: pointer;
-	border-radius: 5px 5px 0 0;
-	flex:1 ;
+  color: white;
+  background: lightgray;
+  font-weight: bold;
+  white-space: nowrap;
+  text-align: center;
+  padding: 10px .5em;
+  order: -1;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+  flex:1 ;
 }
 
 .tab-label:not(:last-of-type){
-	margin-right: 5px;
+  margin-right: 5px;
 }
 
 .tab-switch{
-	display: none;
+  display: none;
 }
 
 .tab-switch:checked+.tab-label {
@@ -255,98 +255,206 @@ dialog[open] {
 }
 
 
+.container{
+  position: relative;
+}
+
 .cp-iptxt {
-	position: relative;
-	width: 80%;
-	margin: 40px 3%;
+  position: relative;
+  width: 80%;
+  margin-bottom: 40px;
+  margin-left: 40px;
+  margin-top: 10px;
 }
 .cp-iptxt input[type=text] {
-	font: 15px/24px sans-serif;
-	box-sizing: border-box;
-	width: 100%;
-	margin: 8px 0;
-	padding: 0.3em;
-	transition: 0.3s;
-	border: 1px solid #1b2538;
-	border-radius: 4px;
-	outline: none;
+  font: 15px/24px sans-serif;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 8px 0;
+  padding: 0.3em;
+  transition: 0.3s;
+  border: 1px solid #1b2538;
+  border-radius: 4px;
+  outline: none;
 }
 .cp-iptxt input[type=text]:focus {
-	border-color: #da3c41;
+  border-color: #da3c41;
 }
 .cp-iptxt input[type=text] {
-	padding-left: 40px;
+  padding-left: 40px;
 }
 .cp-iptxt i {
-	position: absolute;
-	top: 8px;
-	left: 0;
-	padding: 9px 8px;
-	transition: 0.3s;
-	color: #aaaaaa;
+  position: absolute;
+  top: 8px;
+  left: 0;
+  padding: 9px 8px;
+  transition: 0.3s;
+  color: #aaaaaa;
 }
 .cp-iptxt input[type=text]:focus + i {
-	color: #da3c41;
+  color: #da3c41;
 }
 
 #loading-spinner{
-	display: none;
-	position: absolute;
-	top :0;
-	background-color: rgba(0, 0, 0, 0.4);
-	z-index: 3;
-	width: 100%;
-	height: 200%;
+  display: none;
+  position: absolute;
+  top :0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 3;
+  width: 100%;
+  height: 200%;
 }
 .spinner {
-	margin: 100px auto;
-	width: 100px;
-	height: 200px;
-	text-align: center;
-	font-size: 10px;
+  margin: 100px auto;
+  width: 100px;
+  height: 200px;
+  text-align: center;
+  font-size: 10px;
 }
 
 .spinner > div {
-	background-color: #1bF7FF;
-	height: 100%;
-	width: 16px;
-	display: inline-block;
+  background-color: #1bF7FF;
+  height: 100%;
+  width: 16px;
+  display: inline-block;
 
-	-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
-	animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out;
 }
 
 .spinner .rect2 {
-	-webkit-animation-delay: -1.1s;
-	animation-delay: -1.1s;
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
 }
 
 .spinner .rect3 {
-	-webkit-animation-delay: -1.0s;
-	animation-delay: -1.0s;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
 }
 
 .spinner .rect4 {
-	-webkit-animation-delay: -0.9s;
-	animation-delay: -0.9s;
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
 }
 
 .spinner .rect5 {
-	-webkit-animation-delay: -0.8s;
-	animation-delay: -0.8s;
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
 }
 
 @-webkit-keyframes sk-stretchdelay {
-	0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
-	20% { -webkit-transform: scaleY(1.0) }
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+  20% { -webkit-transform: scaleY(1.0) }
 }
 
 @keyframes sk-stretchdelay {
-	0%, 40%, 100% {
-		transform: scaleY(0.4);
-		-webkit-transform: scaleY(0.4);
-	}  20% {
-		transform: scaleY(1.0);
-		-webkit-transform: scaleY(1.0);
-	}
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% {
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}
+
+
+/* 参考：https://webdesignday.jp/inspiration/technique/css/5793/  */
+.menu-list .dropdown-item{
+  list-style: none;
+}
+
+.menu-wrap{
+  display: flex;
+}
+
+.menu-wrap ul{
+  flex: 2;
+  list-style: none;
+  padding: 0px;
+  border-right: 1px solid #eee;
+}
+
+.menu-wrap li li{
+  height: 0;
+  overflow: hidden;
+  transition: .5s;
+}
+
+.menu-wrap li li a{
+  border-top: 1px solid #EEEEEE;
+}
+
+.menu-wrap li:hover > ul > li{
+  height: 2rem;
+  overflow: visible;
+}
+
+.dropdown-item{
+  background: lightgray;
+  border-right: 1px solid #eee;
+  color: #fff;
+  display: block;
+  height: 2rem;
+  font-weight: bold;
+  line-height: 2rem;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+}
+
+.dropdown-item:hover{
+  background: #325A8C;
+}
+
+
+
+/*   */
+.tr-form-select{
+
+}
+
+.tr-form{
+  margin: 10px;
+  display: block;
+  width: 60%;
+  background: #DEFFDE;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+}
+
+.edit-form .dialog{
+  width: 40%;
+}
+
+.dialog-content{
+  width: 80%;
+  padding-left: 20%;
+}
+
+.edit-form button{
+  width: 60%;
+  height: 40px;
+  margin: 10px;
+  color: #fff;
+  background: #325A8C;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: .2s ease-in;
+}
+
+.edit-form .submit-btn{
+  background-color: gray;
+}
+
+.edit-form .submit-btn:hover{
+  background-color: #328C5A;
+}
+
+.edit-form .close-btn{
+  background: ##DA626;
 }
