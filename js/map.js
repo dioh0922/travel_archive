@@ -360,7 +360,10 @@ let flight = {
  * flg: 表示モード
  * */
 function drawFlight(id){
-  map.setZoom(6);
+  map.setZoom(5);
+  if(flight.pin != null){
+    flight.pin.setMap(null); 
+  }
   if(id > 0){
     let post_data = new FormData();
     post_data.append("departure_id", id);
@@ -389,7 +392,6 @@ function drawFlight(id){
       openDialog(er.toString());
     });
   }else{
-    flight.pin.setMap(null);
     flight.polyline.setMap(null);
     flight.polyline.setVisible(false);
   }
