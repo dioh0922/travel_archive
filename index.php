@@ -5,7 +5,8 @@ $login = false;
 $limit = false;
 
 
-if($_SESSION["login"] == "on"){
+if(array_key_exists("login", $_SESSION)
+  && $_SESSION["login"] == "on"){
   $login = true;
 }
 $access = new Src\Access();
