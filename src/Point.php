@@ -33,7 +33,10 @@ class Point{
   public function getAllPin(int $category){
     //カテゴリの写真が1以上あるならピンうつ
     $list = ORM::for_table("travel_point")
-    ->select("*")
+    ->select(["travel_point.pin_id",
+    "travel_point.station_name",
+    "travel_point.lng",
+    "travel_point.lat"])
     ->join("travel_img", ["travel_point.pin_id", "=", "travel_img.pin_id"])
     ->where(["is_deleted" => 0, "travel_img.img_category" => $category])
     ->group_by("travel_point.pin_id")
