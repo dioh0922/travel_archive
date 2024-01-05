@@ -6,7 +6,7 @@ class Point{
   public function __construct(){
     $env = Dotenv\Dotenv::createImmutable(dirname(__FILE__)."/../../env");
     $env->load();
-    ORM::configure("mysql:host=localhost;charset=utf8;dbname=".$_ENV["DB_DB"]);
+    ORM::configure("mysql:host=".$_ENV["DB_HOST"].";port=".$_ENV["DB_PORT"]."charset=utf8;dbname=".$_ENV["DB_DB"]);
     ORM::configure("username", $_ENV["DB_USER"]);
     ORM::configure("password", $_ENV["DB_PASS"]);
   }
@@ -33,7 +33,10 @@ class Point{
   public function getAllPin(int $category){
     //カテゴリの写真が1以上あるならピンうつ
     $list = ORM::for_table("travel_point")
-    ->select("*")
+    ->select(["travel_point.pin_id",
+    "travel_point.station_name",
+    "travel_point.lng",
+    "travel_point.lat"])
     ->join("travel_img", ["travel_point.pin_id", "=", "travel_img.pin_id"])
     ->where(["is_deleted" => 0, "travel_img.img_category" => $category])
     ->group_by("travel_point.pin_id")
