@@ -199,6 +199,7 @@ window.searchGeocode = searchGeocode;
  * e: 画像選択イベント
  * */
 function loadImg(e){
+
   /* exifのライブラリは読み込みまで採りにいかない */
   import("exif-js").then(res => {
     const EXIF = res.default.EXIF;
@@ -213,6 +214,10 @@ function loadImg(e){
     let reader = new FileReader();
     reader.onload = () => {
       let result = reader.result.split(",");
+      if(result[1].length > 7500000){
+        openDialog("ファイルが大きすぎます");
+        return;
+      }
       load_img.name = evt.name;
       load_img.type = evt.type;
       load_img.bin = result[1];
