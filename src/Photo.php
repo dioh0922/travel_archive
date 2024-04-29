@@ -90,6 +90,7 @@ class Photo{
 					throw new Exception("err save bmp");
 				}
 			default:
+				throw new Exception($file_info);
 				break;
 		}
 
