@@ -3,7 +3,10 @@ require(dirname(__FILE__)."/../vendor/autoload.php");
 session_start();
 use Src\Photo;
 use Src\Point;
+use Src\Log;
+
 $result = ["result" => 0];
+$log = new Log();
 
 try{
 	if(!array_key_exists("login", $_SESSION) || $_SESSION["login"] == null){
@@ -26,11 +29,15 @@ try{
 		if($point_id > 0){
 			$point->saveImgPath($point_id, $img_name, $_POST["category"]);
 		}
+		$log->logInfo("save done:".$_POST["name"]);
+	}else{
+		$log->logInfo("request empty bin");
 	}
 	$result["result"] = 1;
 }catch(Exception $e){
 	$result["result"] = -1;
 	$result["message"] = $e->getMessage();
+	$log->logError($e->getMessage());
 }
 
 echo json_encode($result, JSON_UNESCAPED_UNICODE);
