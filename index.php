@@ -70,40 +70,6 @@ $env->load();
   <?php if(!$limit){ ?>
     <div class="container">
       <div class="menu-wrap">
-        <ul class="menu-list">
-          <li class="">
-            <a href="#" class="dropdown-item">範囲</a>          
-            <ul class="dropdown-list">
-              <?php foreach($range_list as $key => $range_obj): ?>
-              <li >
-                  <a href="#" 
-                  class="dropdown-item" 
-                  onClick="showCircle(<?php echo $range_obj["map_range"] ?>, <?php echo $range_obj["g_map_zoom"] ?>)"><?php echo $range_obj["range_label"] ?></a>
-                </li>
-              <?php endforeach ?>
-            </ul>
-          </li>
-        </ul>
-
-        <ul class="menu-list">
-          <li class="menu-list">
-            <a href="#" class="dropdown-item">フライト</a>
-            <ul class="dropdown-list">
-              
-              <?php foreach ($depature_list as $key => $departure_obj): ?>
-                <li>
-                  <a href="#" class="dropdown-item" onClick="drawFlight(<?php echo $departure_obj["pin_id"] ?>)"><?php echo $departure_obj["station_name"] ?></a>
-                </li>    
-              <?php endforeach ?> 
-                <li>
-                  <a href="#" class="dropdown-item" onclick="drawFlight(0)">解除</a>
-                </li>
-                <li>
-                  <a href="#"　 class="dropdown-item" onClick="addAirport()">空港追加</a>
-                </li>
-            </ul>
-          </li>
-        </ul>        
       </div>
 
 
@@ -140,26 +106,6 @@ $env->load();
         <div class="rect4"></div>
         <div class="rect5"></div>
       </div>
-    </div>
-
-    <div class="edit-form">
-      <dialog class="dialog" id="add-airport-dialog">
-        <div class="dialog-content">
-          <p>空港を追加</p>
-          <input class="tr-form" id="destination-name" type="text" placeholder="〇〇空港">
-          <select class="tr-form tr-form-select" id="departure-select">
-            <option value="0">---</option>
-              <?php foreach ($depature_list as $key => $departure_obj): ?>
-                <option value='<?php echo $departure_obj["pin_id"] ?>'>
-                  <?php echo $departure_obj["station_name"] ?>
-                </option>
-              <?php endforeach ?> 
-          </select>
-          <button class="submit-btn" onClick="addDestAirport()">追加</button>
-          <button class="close-btn" onClick="closeAirportDlg()">閉じる</button>
-        </div>
-      </dialog>
-      <div id="dialog-background"></div>
     </div>
 
     <script src="./dist/map.js"></script>
