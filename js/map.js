@@ -138,7 +138,6 @@ function initExistPin(category, zoom){
   openLoading();
   axios.post("./api/getExistRecord.php", post_data).then(res => {
     closeLoading();
-    //var marker = L.marker([defaultLat, defaultLng]).addTo(map);
     if(res.data.result == 1){
       console.log(res.data);
       map.setZoom(zoom);
@@ -150,28 +149,14 @@ function initExistPin(category, zoom){
       }
       arr = res.data.list;
       arr.forEach((item, i) => {
-        //var marker = L.marker([defaultLat, defaultLng]).addTo(map);
         let pin = L.marker([item.lat, item.lng], {
           title: item.station_name
         }).addTo(map);
         pin.on('click', function() {
           const title = this.options.title;  // タイトルを取得
-          this.bindPopup(title).openPopup();  // ポップアップにタイトルを表示
+          const exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
+          this.bindPopup(exist_form).openPopup();  // ポップアップにフォームを表示
         });
-        //console.log(pin);
-        /*
-        const markEl = new google.maps.marker.AdvancedMarkerElement({
-          map,
-          position: new google.maps.LatLng(item.lat, item.lng),
-        });
-        let tmp = new google.maps.Marker({
-          position: new google.maps.LatLng(item.lat, item.lng),
-          map: map
-        });
-        marker.push({pin: markEl, name: item.station_name});
-        let exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
-        markerInfo(tmp, exist_form, item.station_name);
-        */
       });
     }else{
     }
@@ -180,6 +165,9 @@ function initExistPin(category, zoom){
   });
 }
 
+/**
+ * 地図に描画されているものを除去する
+ */
 function removeAllLayer(){
   map.eachLayer(function(layer) {
     if (layer instanceof L.TileLayer) {
@@ -239,6 +227,8 @@ window.search = search;
  * e: 検索文字列
  * */
 async function searchGeocode(e){
+  // TODO: 位置情報→geminiとかでできる？
+
   /*
   let geocoder = new google.maps.Geocoder();
   let target_position = e;
