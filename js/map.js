@@ -1,14 +1,34 @@
 import axios from "axios";
 import {PinForm} from "./form_module.js";
+//const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
 const DEFAULT_ZOOM = 8; /* google map の初期ズーム */
 
 let app = null;
-let map = null;
 let circle = null;
-let marker = [];
 let open_wnd = null;
 let arr = [];
+const marker = [];
+const defaultLat = 35.681236;
+const defaultLng = 139.767125;
+const layerGourp = [];
+
+const map = L.map('map').setView([defaultLat, defaultLng], 13);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+//var marker = L.marker([defaultLat, defaultLng]).addTo(map);
+function onMapClick(e) {
+  console.log(e);
+  console.log("You clicked the map at " + e.latlng);
+  //console.log(marker);
+  //marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+
+}
+
+map.on('click', onMapClick);
+
 
 /**
  * 送信する画像読み込み用オブジェクト
@@ -33,15 +53,24 @@ let open_pin = {
   lng: 0   //緯度
 };
 
+function initMap(){
+  console.log("init map");
+  
+  /*
+  let Options = {
+    zoom: 8, 
+    center: new google.maps.LatLng(35.681391, 139.766103),
+    mapTypeId: "roadmap"
+  };
+  */
+  //map = new window.google.maps.Map(document.getElementById('map'), Options);
+  
+
+}
+
 (window.onload = () => {
 
-  let Options = {
-    zoom: 8, /* 地図の縮尺値 */
-    center: new google.maps.LatLng(35.681391, 139.766103), /* 地図の中心座標 */
-    mapTypeId: "roadmap" /* 地図の種類 */
-  };
-  map = new window.google.maps.Map(document.getElementById('map'), Options);
-  initExistPin(-1, DEFAULT_ZOOM);
+  //initExistPin(-1, DEFAULT_ZOOM);
 
 });
 
@@ -100,6 +129,8 @@ window.categorySelect = categorySelect;
  * zoom: mapのズームレベル
  * */
 function initExistPin(category, zoom){
+  removeAllLayer();
+
   load_img.category.id = category;
   load_img.category.zoom_level = zoom;
   let post_data = new FormData();
@@ -107,7 +138,9 @@ function initExistPin(category, zoom){
   openLoading();
   axios.post("./api/getExistRecord.php", post_data).then(res => {
     closeLoading();
+    //var marker = L.marker([defaultLat, defaultLng]).addTo(map);
     if(res.data.result == 1){
+      console.log(res.data);
       map.setZoom(zoom);
       if(marker.length > 0){
         marker.forEach((mark, i) => {
@@ -117,18 +150,42 @@ function initExistPin(category, zoom){
       }
       arr = res.data.list;
       arr.forEach((item, i) => {
+        //var marker = L.marker([defaultLat, defaultLng]).addTo(map);
+        let pin = L.marker([item.lat, item.lng], {
+          title: item.station_name
+        }).addTo(map);
+        pin.on('click', function() {
+          const title = this.options.title;  // タイトルを取得
+          this.bindPopup(title).openPopup();  // ポップアップにタイトルを表示
+        });
+        //console.log(pin);
+        /*
+        const markEl = new google.maps.marker.AdvancedMarkerElement({
+          map,
+          position: new google.maps.LatLng(item.lat, item.lng),
+        });
         let tmp = new google.maps.Marker({
           position: new google.maps.LatLng(item.lat, item.lng),
           map: map
         });
-        marker.push({pin: tmp, name: item.station_name});
+        marker.push({pin: markEl, name: item.station_name});
         let exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
         markerInfo(tmp, exist_form, item.station_name);
+        */
       });
     }else{
     }
   }).catch(er => {
     openDialog(er.message);
+  });
+}
+
+function removeAllLayer(){
+  map.eachLayer(function(layer) {
+    if (layer instanceof L.TileLayer) {
+      return;  // タイルレイヤーは削除しない
+    }
+    map.removeLayer(layer);  // すべてのレイヤーを削除
   });
 }
 
@@ -145,6 +202,7 @@ function search(e){
         map.setCenter(res);
         let target_location = res;
         if(marker.find(item => item.name == target_position) == void 0){
+          /*
           let mark = new google.maps.Marker({
             map: map,
             title: target_position,
@@ -163,6 +221,7 @@ function search(e){
             open_wnd = info_wnd;
           });
           marker.push({pin: mark, name: target_position});
+          */
         }
 
       });
@@ -180,6 +239,7 @@ window.search = search;
  * e: 検索文字列
  * */
 async function searchGeocode(e){
+  /*
   let geocoder = new google.maps.Geocoder();
   let target_position = e;
 
@@ -189,8 +249,9 @@ async function searchGeocode(e){
       result = res[0].geometry.location;
     }
   });
+  */
 
-  return result;
+  //return result;
 }
 window.searchGeocode = searchGeocode;
 
@@ -289,6 +350,7 @@ window.openImgDialog = openImgDialog;
  * name: ピンの名称
  * */
 function markerInfo(marker, html, name){
+  /*
   let info_wnd = new google.maps.InfoWindow({
     content: html,
     maxWIdth: 200
@@ -299,6 +361,7 @@ function markerInfo(marker, html, name){
     open_wnd = info_wnd;
     open_pin.name = name;
   });
+  */
 }
 
 /**
@@ -336,6 +399,7 @@ function showCircle(range, zoom){
 
   if(range > 0){
     //起点は東京固定で良い?
+    /*
     circle = new google.maps.Circle({
       center: new google.maps.LatLng(35.681391, 139.766103),
       fillColor: '#FF0000',
@@ -346,11 +410,13 @@ function showCircle(range, zoom){
       strokeOpacity: 1,
       strokeWeight: 1
     });
+    */
   }
 }
 window.showCircle = showCircle;
 
 let flight = {
+  /*
   polyline: new google.maps.Polyline({
     geodesic: true,
     strokeColor: "#FF0000",
@@ -358,6 +424,7 @@ let flight = {
     strokeWeight: 2,
   }),
   pin: null
+  */
 }
 
 /**
@@ -376,6 +443,7 @@ function drawFlight(id){
     axios.post("./api/getFlightRoute.php", post_data).then(res => {
       let airport_list = [];
       let tmp = res.data.list;
+      /*
       let departure_latlng = new google.maps.LatLng(res.data.departure.lat, res.data.departure.lng)
       let mark = new google.maps.Marker({
         map: map,
@@ -392,7 +460,7 @@ function drawFlight(id){
       flight.polyline.setPath(airport_list);
       flight.polyline.setMap(map);
       flight.polyline.setVisible(true);
-
+      */
     }).catch(er => {
       openDialog(er.toString());
     });
