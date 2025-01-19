@@ -149,13 +149,10 @@ function initExistPin(category, zoom){
       }
       arr = res.data.list;
       arr.forEach((item, i) => {
-        let pin = L.marker([item.lat, item.lng], {
-          title: item.station_name
-        }).addTo(map);
-        pin.on('click', function() {
-          const title = this.options.title;  // タイトルを取得
+        const exist = createPin(item.lat, item.lng, item.station_name);
+        exist.on('click', function() {
           const exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
-          this.bindPopup(exist_form).openPopup();  // ポップアップにフォームを表示
+          this.bindPopup(exist_form).openPopup();  // ポップアップにフォームを表示  
         });
       });
     }else{
@@ -163,6 +160,13 @@ function initExistPin(category, zoom){
   }).catch(er => {
     openDialog(er.message);
   });
+}
+
+function createPin(lat, lng, title){
+  let pin = L.marker([lat, lng], {
+    title: title
+  }).addTo(map);
+  return pin;
 }
 
 /**
@@ -185,34 +189,7 @@ function search(e){
   axios.get("./api/cntGoogleAccess.php").then(res => {
     if(res.data.result == 1){
       let target_position = e.target.value;
-
-      searchGeocode(target_position).then(res => {
-        map.setCenter(res);
-        let target_location = res;
-        if(marker.find(item => item.name == target_position) == void 0){
-          /*
-          let mark = new google.maps.Marker({
-            map: map,
-            title: target_position,
-            position: target_location
-          });
-
-          let info_wnd = new google.maps.InfoWindow({
-            content: PinForm.loadNewPinForm(target_position),
-            maxWIdth: 200
-          });
-          google.maps.event.addListener(mark, "click", function(event){
-            open_pin.name = target_position;
-            open_pin.lat = target_location.lat(); //経度
-            open_pin.lng = target_location.lng(); //緯度
-            info_wnd.open(window.map, mark);
-            open_wnd = info_wnd;
-          });
-          marker.push({pin: mark, name: target_position});
-          */
-        }
-
-      });
+      searchGeocode(e.target.value);
     }else{
       throw new Error(res.data.message);
     }
@@ -227,21 +204,23 @@ window.search = search;
  * e: 検索文字列
  * */
 async function searchGeocode(e){
-  // TODO: 位置情報→geminiとかでできる？
-
-  /*
-  let geocoder = new google.maps.Geocoder();
-  let target_position = e;
-
-  let result = null;
-  await geocoder.geocode({address: target_position, region: "jp"}, function(res, sts){
-    if(sts == google.maps.GeocoderStatus.OK){
-      result = res[0].geometry.location;
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(e)}&format=json`;
+  // APIリクエスト
+  axios.get(url)
+  .then(response => {
+    const pin = response.data.filter(el => el.addresstype === 'railway' || el.addresstype === 'historic');
+    if(pin.length > 0){
+      removeAllLayer();
+      const new_pin = createPin(pin[0].lat, pin[0].lon, e);
+      new_pin.on('click', function() {
+        const form = PinForm.loadNewPinForm(e);
+        this.bindPopup(form).openPopup();  // ポップアップにフォームを表示  
+      });
+      map.setView([pin[0].lat, pin[0].lon], 13);
     }
+  }).catch(er => {
+    openDialog(er);
   });
-  */
-
-  //return result;
 }
 window.searchGeocode = searchGeocode;
 
@@ -250,7 +229,7 @@ window.searchGeocode = searchGeocode;
  * e: 画像選択イベント
  * */
 function loadImg(e){
-
+  console.log(e);
   /* exifのライブラリは読み込みまで採りにいかない */
   import("exif-js").then(res => {
     const EXIF = res.default.EXIF;
