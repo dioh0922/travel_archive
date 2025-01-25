@@ -6,7 +6,6 @@ const DEFAULT_ZOOM = 8; /* google map の初期ズーム */
 
 let app = null;
 let circle = null;
-let open_wnd = null;
 let arr = [];
 const marker = [];
 const defaultLat = 35.681236;
@@ -18,15 +17,10 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
-//var marker = L.marker([defaultLat, defaultLng]).addTo(map);
 function onMapClick(e) {
-  console.log(e);
-  console.log("You clicked the map at " + e.latlng);
   //console.log(marker);
   //marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-
 }
-
 map.on('click', onMapClick);
 
 
@@ -53,26 +47,7 @@ let open_pin = {
   lng: 0   //緯度
 };
 
-function initMap(){
-  console.log("init map");
-  
-  /*
-  let Options = {
-    zoom: 8, 
-    center: new google.maps.LatLng(35.681391, 139.766103),
-    mapTypeId: "roadmap"
-  };
-  */
-  //map = new window.google.maps.Map(document.getElementById('map'), Options);
-  
-
-}
-
-(window.onload = () => {
-
-  //initExistPin(-1, DEFAULT_ZOOM);
-
-});
+(window.onload = () => {});
 
 
 /**
@@ -151,6 +126,7 @@ function initExistPin(category, zoom){
       arr.forEach((item, i) => {
         const exist = createPin(item.lat, item.lng, item.station_name);
         exist.on('click', function() {
+          open_pin = {name: item.station_name, lat:item.lat, lng: item.lng};
           const exist_form = PinForm.loadPinForm(item.station_name, item.pin_id);
           this.bindPopup(exist_form).openPopup();  // ポップアップにフォームを表示  
         });
@@ -188,7 +164,6 @@ function removeAllLayer(){
 function search(e){
   axios.get("./api/cntGoogleAccess.php").then(res => {
     if(res.data.result == 1){
-      let target_position = e.target.value;
       searchGeocode(e.target.value);
     }else{
       throw new Error(res.data.message);
@@ -208,11 +183,12 @@ async function searchGeocode(e){
   // APIリクエスト
   axios.get(url)
   .then(response => {
-    const pin = response.data.filter(el => el.addresstype === 'railway' || el.addresstype === 'historic');
+    const pin = response.data.filter(el => el.addresstype === 'railway' || el.addresstype === 'historic' || el.addresstype == 'tourism');
     if(pin.length > 0){
       removeAllLayer();
       const new_pin = createPin(pin[0].lat, pin[0].lon, e);
-      new_pin.on('click', function() {
+      new_pin.on('click', function () {
+        open_pin = {name: e, lat:pin[0].lat, lng: pin[0].lon};
         const form = PinForm.loadNewPinForm(e);
         this.bindPopup(form).openPopup();  // ポップアップにフォームを表示  
       });
@@ -277,7 +253,7 @@ function saveImg(){
   axios.post("./api/addImg.php", post_data).then(res => {
     closeLoading();
     if(res.data.result == 1){
-      open_wnd.close();
+      map.closePopup();
       initExistPin(load_img.category.id, load_img.category.zoom_level);
     }else{
       throw new Error(res.data.message);

@@ -57,14 +57,6 @@ $env->load();
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
 <?php if(!$limit){ ?>
-
-<!-- 
-  <?php
-  /*
-  <script src="https://maps.google.com/maps/api/js?key=<?=$_ENV["G_MAP_API"] ?>&language=ja&libraries=places,marker"></script>
-  */
-  ?>
-  -->
 <?php } ?>
 <link rel="stylesheet" href="./travel_archive.css">
 </head>
