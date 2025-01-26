@@ -1,5 +1,6 @@
 import axios from "axios";
 import {PinForm} from "./form_module.js";
+import {compressFile} from "./img_module.js";
 //const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
 const DEFAULT_ZOOM = 8; /* google map の初期ズーム */
@@ -18,8 +19,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 function onMapClick(e) {
-  //console.log(marker);
-  //marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 }
 map.on('click', onMapClick);
 
@@ -114,7 +113,6 @@ function initExistPin(category, zoom){
   axios.post("./api/getExistRecord.php", post_data).then(res => {
     closeLoading();
     if(res.data.result == 1){
-      console.log(res.data);
       map.setZoom(zoom);
       if(marker.length > 0){
         marker.forEach((mark, i) => {
@@ -205,7 +203,6 @@ window.searchGeocode = searchGeocode;
  * e: 画像選択イベント
  * */
 function loadImg(e){
-  console.log(e);
   /* exifのライブラリは読み込みまで採りにいかない */
   import("exif-js").then(res => {
     const EXIF = res.default.EXIF;
@@ -218,17 +215,17 @@ function loadImg(e){
       }
     });
     let reader = new FileReader();
-    reader.onload = () => {
-      let result = reader.result.split(",");
-      if(result[1].length > 7500000){
-        openDialog("ファイルが大きすぎます");
-        return;
-      }
-      load_img.name = evt.name;
-      load_img.type = evt.type;
-      load_img.bin = result[1];
-      document.getElementById("file-preview").src = reader.result;
-      document.getElementById("file-preview").style.display = "block";
+    let prev_img = null;
+    reader.onload = (e) => {
+      compressFile(e.target.result).then(res => {
+        prev_img = res;
+        load_img.name = evt.name;
+        load_img.type = evt.type;
+        load_img.bin = prev_img.split(",")[1];
+        document.getElementById("file-preview").src = prev_img;
+        document.getElementById("file-preview").style.display = "block";
+  
+      });
     }
     reader.readAsDataURL(evt);
   });
@@ -259,7 +256,7 @@ function saveImg(){
       throw new Error(res.data.message);
     }
   }).catch(er => {
-    openDialog(er.message);
+    openDialog(er);
   });
 }
 window.saveImg = saveImg;

@@ -458,5 +458,9 @@ dialog[open] {
 }
 
 .edit-form .close-btn{
-  background: ##DA626;
+  background: #3DA626;
+}
+
+#canvas{
+  display:none;
 }

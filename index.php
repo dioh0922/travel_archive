@@ -112,6 +112,8 @@ $env->load();
       </div>
     </div>
 
+    <canvas id="canvas"></canvas>
+
     <script src="./dist/map.js"></script>
   <?php }else{  ?>
     <h1>閉鎖中</h1>
