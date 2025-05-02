@@ -78,7 +78,7 @@ $env->load();
 
 
       <div class="cp-iptxt">
-        <input type="text" id="st-name" value="" placeholder="駅名を入力" onCHange="search(event)"/>
+        <input type="text" id="st-name" value="" placeholder="駅名を入力" onChange="search(event)"/>
         <i class="material-icons">location_on</i>
       </div>
 
