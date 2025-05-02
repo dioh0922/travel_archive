@@ -5,6 +5,7 @@ import {compressFile} from "./img_module.js";
 
 const DEFAULT_ZOOM = 8; /* google map の初期ズーム */
 
+let name = '';
 let app = null;
 let circle = null;
 let arr = [];
@@ -19,6 +20,16 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 function onMapClick(e) {
+  if(!name){
+    return;
+  }
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+  removeAllLayer();
+  const new_pin = createPin(lat, lng, name);
+  open_pin = {name: name, lat:lat, lng: lng};
+  const form = PinForm.loadNewPinForm(name);
+  new_pin.bindPopup(form).openPopup();  // ポップアップにフォームを表示  
 }
 map.on('click', onMapClick);
 
@@ -160,6 +171,7 @@ function removeAllLayer(){
  * e: 検索文字列のイベント
  * */
 function search(e){
+  name = e.target.value;
   axios.get("./api/cntGoogleAccess.php").then(res => {
     if(res.data.result == 1){
       searchGeocode(e.target.value);
@@ -181,7 +193,9 @@ async function searchGeocode(e){
   // APIリクエスト
   axios.get(url)
   .then(response => {
-    const pin = response.data.filter(el => el.addresstype === 'railway' || el.addresstype === 'historic' || el.addresstype == 'tourism');
+    const pin = response.data.filter(el => el.addresstype === 'railway' 
+      || el.addresstype === 'historic' 
+      || el.addresstype === 'tourism');
     if(pin.length > 0){
       removeAllLayer();
       const new_pin = createPin(pin[0].lat, pin[0].lon, e);
