@@ -2,6 +2,7 @@
 namespace Src;
 use ORM;
 use Dotenv;
+use Exception;
 
 class Photo{
 	private const IMG_DIR = "/../img/";
@@ -35,9 +36,21 @@ class Photo{
 		ORM::configure("password", $_ENV["DB_PASS"]);
 	}
 	public function putFile(string $name, string $bin, int $orientation){
+		if(!$this->checkValidFileName($name)){
+			throw new Exception("invalid file ext");
+		}
+		if(!$this->checkValidFileSize($bin)){
+			throw new Exception("invalid file size");
+		}
 		$data = base64_decode($bin);
 		$image = imagecreatefromstring($data);
 		$file_info = getimagesizefromstring($data);
+		if($image === false || $file_info === false){
+			throw new Exception("invalid image bin");
+		}
+		if(!$this->checkValidMimeType($file_info["mime"])){
+			throw new Exception("invalid mime type");
+		}
 		$src_width = $file_info[0];
 		$src_height = $file_info[1];
 
@@ -89,9 +102,9 @@ class Photo{
 				if(!imagebmp($canvas, dirname(__FILE__).self::IMG_DIR.$name)){
 					throw new Exception("err save bmp");
 				}
-			default:
-				throw new Exception($file_info);
 				break;
+			default:
+				throw new Exception("err save file:".$name);
 		}
 
 		imagedestroy($image);
@@ -102,5 +115,18 @@ class Photo{
 		->select("file_name")
 		->where(["pin_id" => $id, "file_delete" => 0, "img_category" => $category])->find_array();
 		return $path;
+	}
+	private function checkValidFileSize(string $bin){
+		$size_limit = 10 * 1024 * 1024;
+		return strlen($bin) <= $size_limit;
+	}
+	private function checkValidFileName(string $name){
+		$file_ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+		$allowed_ext = ["jpg", "jpeg", "bmp", "png"];
+		return in_array($file_ext, $allowed_ext);
+	}
+	private function checkValidMimeType(string $mime){
+		$allowed_mime_types = ["image/jpeg", "image/png", "image/bmp"];
+		return in_array($mime, $allowed_mime_types);
 	}
 }
