@@ -1,13 +1,27 @@
 <?php
 require(dirname(__FILE__)."/vendor/autoload.php");
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.use_strict_mode', 1);
+ini_set('session.cookie_samesite', 'Strict');
+
 session_start();
 $login = false;
 $limit = false;
 
 
-if(array_key_exists("login", $_SESSION)
-  && $_SESSION["login"] == "on"){
-  $login = true;
+if (isset($_SESSION["login"]) && $_SESSION["login"] === "on") {
+  // Check session expiry (30 minutes timeout)
+  if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+    session_unset();
+    session_destroy();
+    $login = false;
+  } else {
+    $_SESSION['last_activity'] = time();
+    $login = true;
+  }
+} else {
+  $login = false;
 }
 $access = new Src\Access();
 $today = date("Y-m-d");
