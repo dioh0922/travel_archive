@@ -15,6 +15,7 @@
         "vlucas/phpdotenv": "^5.4",
         "illuminate/events": "^7.30",
         "j4mie/idiorm": "^1.5",
-        "monolog/monolog": "^3.6"
+        "monolog/monolog": "^3.6",
+        "guzzlehttp/guzzle": "^7.9"
     }
 }
