@@ -306,7 +306,11 @@ function login(){
   let post_data = new FormData();
   post_data.append("pass", document.getElementById("pass").value);
   openLoading();
-  axios.post("../util_api/login.php", post_data).then(res => {
+  axios.post("./api/login.php", post_data, {
+    headers:{
+      "X-CSRF-Token": document.getElementById("csrf").value
+    }
+  }).then(res => {
     closeLoading();
     if(res.data.result == 1){
       location.reload();

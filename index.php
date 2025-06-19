@@ -9,6 +9,10 @@ session_start();
 $login = false;
 $limit = false;
 
+if(empty($_SESSION["csrf_token"])){
+  $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+}
+
 
 if (isset($_SESSION["login"]) && $_SESSION["login"] === "on") {
   // Check session expiry (30 minutes timeout)
@@ -21,8 +25,10 @@ if (isset($_SESSION["login"]) && $_SESSION["login"] === "on") {
     $login = true;
   }
 } else {
+  $_SESSION['last_activity'] = time();
   $login = false;
 }
+
 $access = new Src\Access();
 $today = date("Y-m-d");
 $current_access = $access->getCurrentCount($today);
@@ -54,6 +60,7 @@ if(!$limit){
 
 $env = Dotenv\Dotenv::createImmutable(dirname(__FILE__)."/../env");
 $env->load();
+$csrf = $_SESSION["csrf_token"];
 ?>
 
 <!DOCTYPE html>
@@ -78,6 +85,7 @@ $env->load();
 <body>
   <?php if(!$login){ ?>
     <div class="row">
+      <input type="hidden" name="csrf_token" id="csrf" value="<?php echo $csrf; ?>"/>
       <input type="password" name="pass" id="pass" placeholder="パスワード" value="">
       <button onClick="login()">
         <i class="tiny material-icons">vpn_key</i>
