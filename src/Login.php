@@ -29,7 +29,7 @@ class Login{
     $json = json_decode($body, true);
     $success = isset($json["result"]) && $json["result"] === 1;
     if($success){
-      $_SESSION["login"] == "on";
+      $_SESSION["login"] = "on";
     }
     return $success;
   }
