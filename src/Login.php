@@ -27,7 +27,7 @@ class Login{
     ]);
     $body = $response->getBody();
     $json = json_decode($body, true);
-    return isset($json["result"]) && $json["result"] === "1";
+    return isset($json["result"]) && $json["result"] === 1;
   }
 
 }
