@@ -17,7 +17,7 @@ try {
   }
 
 }catch(Exception $e){
-	http_response_code(500);
+	//http_response_code(500);
 	$result["result"] = -1;
 	$result["message"] = "Internal server error";
   $logger->logInfo("getFlightRoute.php Error: " . $e->getMessage());
