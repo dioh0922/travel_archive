@@ -20,10 +20,10 @@ class Login{
   public function login(string $pass){
     $host = $this->header["Host"] ?? "";
     $url = "https://".$host."/util_api/login.php";
-    $post_data = ["pass" => $pass];
+    $post_data = ["pass" => $pass, "inner" => true];
     $client = new Client();
     $response = $client->post($url, [
-      "json" => $post_data,
+      "form_params" => $post_data,
     ]);
     $body = $response->getBody();
     $json = json_decode($body, true);
