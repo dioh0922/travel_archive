@@ -1,10 +1,12 @@
 <?php
 require(dirname(__FILE__)."/../vendor/autoload.php");
 use Src\Login;
+use Src\Log;
 
 header('Content-Type: application/json');
 
 $result = ["result" => 0];
+$logger = new Log();
 
 try {
   $login = new Login();
@@ -18,7 +20,7 @@ try {
 	http_response_code(500);
 	$result["result"] = -1;
 	$result["message"] = "Internal server error";
-	error_log("getFlightRoute.php Error: " . $e->getMessage());
+  $logger->logInfo("getFlightRoute.php Error: " . $e->getMessage());
 }
 
 echo json_encode($result, JSON_UNESCAPED_UNICODE);
