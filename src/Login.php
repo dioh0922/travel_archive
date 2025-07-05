@@ -10,7 +10,7 @@ class Login{
 
   public function validateCsrf(){
     $header = getallheaders();
-    $token = $header["X-CSRF-Token"] ?? "";
+    $token = $header["X-Csrf-Token"] ?? "";
     return $_SERVER["REQUEST_METHOD"] !== "GET" &&
       isset($_SESSION["csrf_token"]) &&
       hash_equals($_SESSION["csrf_token"], $token);
