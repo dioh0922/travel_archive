@@ -17,7 +17,7 @@ class Login{
   }
 
   public function login(string $pass){
-    $url = "https://".gethostbyname()."/util_api/login.php";
+    $url = "https://".gethostname()."/util_api/login.php";
     $post_data = ["pass" => $pass];
     $client = new Client();
     $response = $client->post($url, [
