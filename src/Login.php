@@ -2,22 +2,24 @@
 namespace Src;
 use GuzzleHttp\Client;
 class Login{
+  private $header = null;
 	public function __construct(){
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
+      $this->header = getallheaders();
     }
 	}
 
   public function validateCsrf(){
-    $header = getallheaders();
-    $token = $header["X-Csrf-Token"] ?? "";
+    $token = $this->header["X-Csrf-Token"] ?? "";
     return $_SERVER["REQUEST_METHOD"] !== "GET" &&
       isset($_SESSION["csrf_token"]) &&
       hash_equals($_SESSION["csrf_token"], $token);
   }
 
   public function login(string $pass){
-    $url = "https://".gethostname()."/util_api/login.php";
+    $host = $this->header["Host"] ?? "";
+    $url = "https://".$host."/util_api/login.php";
     $post_data = ["pass" => $pass];
     $client = new Client();
     $response = $client->post($url, [
