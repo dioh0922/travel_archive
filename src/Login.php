@@ -4,9 +4,9 @@ use GuzzleHttp\Client;
 class Login{
   private $header = null;
 	public function __construct(){
+    $this->header = getallheaders();
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
-      $this->header = getallheaders();
     }
 	}
 
