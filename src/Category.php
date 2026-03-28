@@ -12,7 +12,10 @@ class Category{
   }
 
   public function getCategory(){
-    return ORM::for_table("travel_pin_category")->select("*")->find_array();
+    return ORM::for_table("travel_pin_category")
+      ->where("is_delete", 0)
+      ->select("*")
+      ->find_array();
   }
 }
 
