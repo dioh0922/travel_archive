@@ -99,9 +99,18 @@ $csrf = $_SESSION["csrf_token"];
       </div>
 
 
-      <div class="cp-iptxt">
-        <input type="text" id="st-name" value="" placeholder="駅名を入力" onChange="search(event)"/>
-        <i class="material-icons">location_on</i>
+      <div class="input-row">
+        <div class="cp-iptxt">
+          <input type="text" id="st-name" value="" placeholder="駅名を入力" onChange="search(event)"/>
+          <i class="material-icons">location_on</i>
+        </div>
+        <?php if($login){ ?>
+        <div class="download-btn">
+          <button onClick="dumpImg()">
+            <i class="material-icons">download</i>
+          </button>
+        </div>
+        <?php } ?>
       </div>
 
       <div class="tab-wrap ">

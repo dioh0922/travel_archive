@@ -322,3 +322,22 @@ function login(){
   });
 }
 window.login = login;
+
+function dumpImg(){
+  axios.get("./api/dumpImgList.php",{
+    responseType: 'blob',
+    timeout: 300000
+  }).then(res => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'travel_photos.zip');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  }).catch(er => {
+    openDialog(er.message + "\nダウンロードに失敗しました");
+  });
+}
+window.dumpImg = dumpImg;

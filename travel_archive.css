@@ -297,6 +297,80 @@ dialog[open] {
   color: #da3c41;
 }
 
+.cp-iptxt button {
+  top: 8px;
+  right: 0;
+  padding: 9px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaaaaa;
+  transition: 0.3s;
+}
+
+.cp-iptxt button:hover {
+  color: #da3c41;
+}
+
+.cp-iptxt button i {
+  font-size: 24px;
+}
+
+.cp-iptxt.download-btn {
+  width: auto;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+.cp-iptxt.download-btn button {
+  position: static;
+  padding: 8px;
+  border: 1px solid #1b2538;
+  border-radius: 4px;
+  background: white;
+  color: #aaaaaa;
+  transition: 0.3s;
+}
+
+.cp-iptxt.download-btn button:hover {
+  border-color: #da3c41;
+  color: #da3c41;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-left: 40px;
+  margin-top: 10px;
+}
+
+.input-row .cp-iptxt {
+  width: 80%;
+  margin: 0;
+}
+
+.input-row .download-btn {
+  margin-left: 10px;
+}
+
+.input-row .download-btn button {
+  padding: 8px;
+  border: none;
+  background: none;
+  color: #aaaaaa;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.input-row .download-btn button:hover {
+  color: #da3c41;
+}
+
+.input-row .download-btn button i {
+  font-size: 24px;
+}
+
 #loading-spinner{
   display: none;
   position: absolute;
