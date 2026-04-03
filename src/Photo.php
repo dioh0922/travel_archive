@@ -3,6 +3,7 @@ namespace Src;
 use ORM;
 use Dotenv;
 use Exception;
+use ZipArchive;
 
 class Photo{
 	private const IMG_DIR = "/../img/";
@@ -116,6 +117,71 @@ class Photo{
 		->where(["pin_id" => $id, "file_delete" => 0, "img_category" => $category])->find_array();
 		return $path;
 	}
+	public function dumpAllPhoto(): string {
+		$photos = $this->getAllActivePhoto();
+		if (empty($photos)) {
+			throw new Exception("No photos to download");
+		}
+
+		$zipName = 'travel_photos_' . date('Y-m-d_H-i-s') . '.zip';
+		$tmpZip = sys_get_temp_dir() . '/' . uniqid('zip_', true) . '.zip';
+
+		$zip = new ZipArchive();
+		if ($zip->open($tmpZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+			throw new Exception("Failed to create ZIP file");
+		}
+
+		$compressedFiles = [];
+		$imgDir = dirname(__FILE__) . self::IMG_DIR;
+		$photoList = $this->buildPhotoList($photos);
+		if ($zip->addFromString('photo_list.txt', $photoList) === false) {
+			throw new Exception("Failed to add photo list to ZIP");
+		}
+		foreach ($photos as $photo) {
+			$fileName = $photo['file_name'];
+			$filePath = $imgDir . $fileName;
+			if (file_exists($filePath)) {
+				// Compress image before adding to ZIP
+				$compressedPath = $this->compressImage($filePath);
+				if ($compressedPath && file_exists($compressedPath)) {
+					if ($zip->addFile($compressedPath, $fileName) === false) {
+						throw new Exception("Failed to add compressed file to ZIP: " . $fileName);
+					}
+					$compressedFiles[] = $compressedPath;
+				} else {
+					// If compression fails, add original
+					if ($zip->addFile($filePath, $fileName) === false) {
+						throw new Exception("Failed to add original file to ZIP: " . $fileName);
+					}
+				}
+			}
+		}
+		if ($zip->close() === false) {
+			throw new Exception("Failed to close ZIP file");
+		}
+
+		// Clean up temporary compressed files
+		foreach ($compressedFiles as $compressedPath) {
+			if (file_exists($compressedPath)) {
+				unlink($compressedPath);
+			}
+		}
+
+		return $tmpZip; // Return ZIP path instead of sending response
+	}
+	private function getAllActivePhoto(){
+		$path = ORM::for_table("travel_img")
+		->select("file_name")
+		->where(["file_delete" => 0])->find_array();
+		return $path;
+	}
+	private function buildPhotoList(array $photos): string {
+		$lines = [];
+		foreach ($photos as $photo) {
+			$lines[] = $photo['file_name'];
+		}
+		return implode("\n", $lines) . "\n";
+	}
 	private function checkValidFileSize(string $bin){
 		$size_limit = 10 * 1024 * 1024;
 		return strlen($bin) <= $size_limit;
@@ -128,5 +194,37 @@ class Photo{
 	private function checkValidMimeType(string $mime){
 		$allowed_mime_types = ["image/jpeg", "image/png", "image/bmp"];
 		return in_array($mime, $allowed_mime_types);
+	}
+	private function compressImage(string $srcPath): ?string {
+		$info = getimagesize($srcPath);
+		if (!$info) {
+			return null;
+		}
+
+		$compressedPath = sys_get_temp_dir() . '/compressed_' . uniqid() . '_' . basename($srcPath);
+
+		switch ($info[2]) {
+			case IMAGETYPE_JPEG:
+				$img = imagecreatefromjpeg($srcPath);
+				if ($img && imagejpeg($img, $compressedPath, 100)) {
+					imagedestroy($img);
+					return $compressedPath;
+				}
+				break;
+			case IMAGETYPE_PNG:
+				$img = imagecreatefrompng($srcPath);
+				if ($img && imagepng($img, $compressedPath, 9)) {
+					imagedestroy($img);
+					return $compressedPath;
+				}
+				break;
+			default:
+				return null;
+		}
+
+		if (isset($img) && $img) {
+			imagedestroy($img);
+		}
+		return null;
 	}
 }
