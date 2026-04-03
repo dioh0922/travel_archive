@@ -106,9 +106,9 @@ $csrf = $_SESSION["csrf_token"];
         </div>
         <?php if($login){ ?>
         <div class="download-btn">
-          <button onClick="dumpImg()">
+          <a href="./api/dumpImgList.php" download="travel_photos.zip">
             <i class="material-icons">download</i>
-          </button>
+          </a>
         </div>
         <?php } ?>
       </div>
