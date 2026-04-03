@@ -18,6 +18,8 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.SVR_DIR }}
+            pwd
+            git config --global --add safe.directory '*'
             git pull
             composer install
             npm install
