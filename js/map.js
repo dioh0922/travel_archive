@@ -1,6 +1,7 @@
 import axios from "axios";
 import {PinForm} from "./form_module.js";
 import {compressFile} from "./img_module.js";
+import {mountDialog, unmountDialog} from "./util_module.js";
 //const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
 const DEFAULT_ZOOM = 8; /* google map の初期ズーム */
@@ -64,9 +65,7 @@ let open_pin = {
  * 
  * */
 function openDialog(str){
-  document.getElementById("img-preview").innerHTML = str;
-  document.getElementById("img-dialog").show();
-  document.getElementById("dialog-background").style.display = "block";
+  mountDialog(str);
 }
 window.openDialog = openDialog;
 
@@ -74,8 +73,7 @@ window.openDialog = openDialog;
  * ダイアログの非表示
  * */
 function closeDialog(){
-  document.getElementById("img-dialog").close();
-  document.getElementById("dialog-background").style.display = "none";
+  unmountDialog();
 }
 window.closeDialog = closeDialog;
 
