@@ -13,7 +13,6 @@ if(empty($_SESSION["csrf_token"])){
   $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
 }
 
-
 if (isset($_SESSION["login"]) && $_SESSION["login"] === "on") {
   // Check session expiry (30 minutes timeout)
   if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
@@ -106,8 +105,8 @@ $csrf = $_SESSION["csrf_token"];
         </div>
         <?php if($login){ ?>
         <div class="download-btn">
-          <a href="./api/dumpImgList.php" download="travel_photos.zip">
-            <i class="material-icons">download</i>
+          <a href="./dump.php">
+            <i class="material-icons">folder_zip</i>
           </a>
         </div>
         <?php } ?>
