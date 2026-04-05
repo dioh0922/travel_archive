@@ -31,21 +31,32 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
 $_SESSION['last_activity'] = time();
 
 try {
-	$photo = new Photo();
-	$zipPath = $photo->dumpAllPhoto(); // Get ZIP path
+	$scriptPath = dirname(__FILE__) . '/bat/createDumpImgList.php';
+	if (!file_exists($scriptPath)) {
+		throw new Exception('Dump script not found');
+	}
 
-	// Send ZIP response
-	$zipName = 'travel_photos_' . date('Y-m-d_H-i-s') . '.zip';
-	header('Content-Type: application/zip');
-	header('Content-Disposition: attachment; filename="' . $zipName . '"');
-	header('Content-Length: ' . filesize($zipPath));
-	readfile($zipPath);
-	unlink($zipPath); // Clean up
+	// Linux only: use CLI PHP binary path
+	$phpBinary = trim(shell_exec('command -v php')) ?: PHP_BINARY;
+	if (!$phpBinary || !is_executable($phpBinary)) {
+		throw new Exception('PHP CLI binary not available');
+	}
+
+	$command = escapeshellarg($phpBinary) . ' ' . escapeshellarg($scriptPath) . ' > /dev/null 2>&1 &';
+	exec($command, $output, $returnVar);
+	if ($returnVar !== 0) {
+		throw new Exception('Failed to start dump job: ' . implode(' ', $output));
+	}
+
+	$result["result"] = 0;
+	$result["cmd"] = $command;
+	$result["message"] = "Dump job started";
+	echo json_encode($result, JSON_UNESCAPED_UNICODE);
 	exit;
 } catch (Exception $e) {
 	http_response_code(500);
 	$result["result"] = -1;
-	$result["message"] = "Download failed: " . $e->getMessage();
+	$result["message"] = "Failed to start dump job: " . $e->getMessage();
 	echo json_encode($result, JSON_UNESCAPED_UNICODE);
 }
 ?>
