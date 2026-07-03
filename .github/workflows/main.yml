@@ -24,3 +24,4 @@ jobs:
             composer install
             npm install
             npm run prod
+            composer clear-cache

@@ -2,6 +2,9 @@
 $login = $login ?? false;
 $limit = $limit ?? false;
 
+header('Location: ../');
+exit;
+
 if (isset($_SESSION["login"]) && $_SESSION["login"] === "on") {
   // Check session expiry (30 minutes timeout)
   if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
