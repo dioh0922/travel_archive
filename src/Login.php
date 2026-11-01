@@ -1,8 +1,6 @@
 <?php
 namespace Src;
 use GuzzleHttp\Client;
-use Dotenv;
-
 class Login{
   private $header = null;
 	public function __construct(){
@@ -20,10 +18,8 @@ class Login{
   }
 
   public function login(string $pass){
-    $env = Dotenv\Dotenv::createImmutable(dirname(__FILE__)."/../../env");
-    $env->load();
-    
-    $url = $_ENV["INNER_UTIL_URL"] . "/api/util/login";
+    $host = $this->header["Host"] ?? "";
+    $url = "https://".$host."/util_api/login.php";
     $post_data = ["pass" => $pass, "inner" => true];
     $client = new Client();
     $response = $client->post($url, [
