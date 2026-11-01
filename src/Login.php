@@ -1,6 +1,7 @@
 <?php
 namespace Src;
 use GuzzleHttp\Client;
+use Dotenv;
 class Login{
   private $header = null;
 	public function __construct(){
@@ -18,16 +19,24 @@ class Login{
   }
 
   public function login(string $pass){
-    $host = $this->header["Host"] ?? "";
-    $url = "https://".$host."/util_api/login.php";
-    $post_data = ["pass" => $pass, "inner" => true];
+    $env = Dotenv\Dotenv::createImmutable(dirname(__FILE__)."/../../env");
+    $env->load();
+
+    $url = $_ENV["INNER_UTIL_URL"] . "/api/util/login";
+    $post_data = ["password" => $pass, "inner" => true];
     $client = new Client();
     $response = $client->post($url, [
-      "form_params" => $post_data,
+      "json" => $post_data,
+      "headers" => [
+        "Content-Type" => "application/json"
+      ]
     ]);
     $body = $response->getBody();
     $json = json_decode($body, true);
-    $success = isset($json["result"]) && $json["result"] === 1;
+
+    $success = $json["success"] ?? false;
+    /* ext_apiはsuccessで直接返る */
+    // $success = isset($json["result"]) && $json["result"] === 1;
     if($success){
       $_SESSION["login"] = "on";
     }
