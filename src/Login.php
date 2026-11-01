@@ -1,8 +1,6 @@
 <?php
 namespace Src;
 use GuzzleHttp\Client;
-use Dotenv;
-
 class Login{
   private $header = null;
 	public function __construct(){
